@@ -1,0 +1,25 @@
+<div class="container">
+  <div class="row">
+    <h4 class="cyan-text text-darken-2"><b>Projetos</b></h4>
+    <a class="waves-effect waves-light btn"><i class="material-icons left">add</i>Novo Projeto</a>
+  </div>
+
+  <div class="divider cyan darken-2"></div>
+  <br>
+  <ul class="collapsible popout">
+    <li *ngFor="let item of projetos | async">
+      <a class="buttons-projetos btn-floating btn-small waves-effect waves-light red right"><i class="material-icons">delete_forever</i></a>
+      <a class="buttons-projetos btn-floating btn-small waves-effect waves-light blue right"><i class="material-icons">edit</i></a>
+      <div class="collapsible-header">{{item.titulo}}</div>
+      <div class="collapsible-body">
+        <p><b class="light-blue-text text-accent-4">Área:</b> {{item.area}}</p>
+        <p><b class="light-blue-text text-accent-4">Status:</b> {{item.status}}</p>
+        <p><b class="light-blue-text text-accent-4">Coordenador:</b> {{item.equipe.coordenador}}</p>
+        <p><b class="light-blue-text text-accent-4">Equipe:</b> {{item.equipe.membro}}</p>
+        <p><b class="light-blue-text text-accent-4">Finalidade:</b> {{item.finalidade}}</p>
+        <p><b class="light-blue-text text-accent-4">Aporte:</b> {{item.financiamento}}</p>
+        <p><b class="light-blue-text text-accent-4">Aplicabilidade:</b> {{item.aplicabilidade.contexto}}</p>
+      </div>
+    </li>
+  </ul>
+</div>

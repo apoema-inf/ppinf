@@ -1,0 +1,25 @@
+<div class="navbar-fixed">
+  <nav class="light-blue darken-2">
+    <div class="container nav-wrapper light-blue darken-2">
+      <a href="#!" class="brand-logo"><img style="max-width:30%" src="assets/footer/logo-apoema.png" alt=""></a>
+      <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+      <ul class="right hide-on-med-and-down">
+        <li routerLinkActive="active"><a routerLink="/inicio">Início</a></li>
+        <li routerLinkActive="active"><a routerLink="/sobre">Sobre</a></li>
+        <li routerLinkActive="active"><a routerLink="/contato">Contato</a></li>
+        <li *ngIf="!isAdmin" routerLinkActive="active"><a routerLink="/login">Login</a></li>
+        <li *ngIf="isAdmin" routerLinkActive="active"><a routerLink="/admin">Administrador</a></li>
+        <li *ngIf="isAdmin" routerLinkActive="active"><a class="waves-effect waves-light btn red" (click)="logout()">Logout</a></li>
+      </ul>
+    </div>
+  </nav>
+</div>
+
+<ul class="sidenav" id="mobile-demo">
+  <li><a routerLink="/inicio">Início</a></li>
+  <li><a routerLink="/sobre">Sobre</a></li>
+  <li><a routerLink="/contato">Contato</a></li>
+  <li *ngIf="!isAdmin" routerLinkActive="active"><a routerLink="/login">Login</a></li>
+  <li *ngIf="isAdmin" routerLinkActive="active"><a routerLink="/admin">Administrador</a></li>
+  <li *ngIf="isAdmin" routerLinkActive="active"><a class="waves-effect waves-light btn red" (click)="logout()">Logout</a></li>
+</ul>
