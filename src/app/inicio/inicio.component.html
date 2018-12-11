@@ -31,35 +31,37 @@
 </div>
 <br>
 <div class="div-btns">
-  <a class="waves-effect waves-light btn orange darken-4"><i class="material-icons left">all_inclusive</i>Todos</a>
-  <a class="waves-effect waves-light btn orange darken-4"><i class="material-icons left">nature_people</i>Agronegócio</a>
-  <a class="waves-effect waves-light btn orange darken-4"><i class="material-icons left">school</i>Educação</a>
-  <a class="waves-effect waves-light btn orange darken-4"><i class="material-icons left">build</i>Engenharia</a>
-  <a class="waves-effect waves-light btn orange darken-4"><i class="material-icons left">http</i>Informática</a>
-  <a class="waves-effect waves-light btn orange darken-4"><i class="material-icons left">autorenew</i>Logística</a>
-  <a class="waves-effect waves-light btn orange darken-4"><i class="material-icons left">brightness_5</i>Meio Ambiente</a>
-  <a class="waves-effect waves-light btn orange darken-4"><i class="material-icons left">favorite</i>Saúde</a>
-  <a class="waves-effect waves-light btn orange darken-4"><i class="material-icons left">dehaze</i>Outros</a>
+  <a (click)="filterArea('')" class="waves-effect waves-light btn orange darken-4"><i class="material-icons left">all_inclusive</i>Todos</a>
+  <a (click)="filterArea('Agronegócio')" class="waves-effect waves-light btn orange darken-4"><i class="material-icons left">nature_people</i>Agronegócio</a>
+  <a (click)="filterArea('Educação')" class="waves-effect waves-light btn orange darken-4"><i class="material-icons left">school</i>Educação</a>
+  <a (click)="filterArea('Engenharia')" class="waves-effect waves-light btn orange darken-4"><i class="material-icons left">build</i>Engenharia</a>
+  <a (click)="filterArea('Informática')" class="waves-effect waves-light btn orange darken-4"><i class="material-icons left">http</i>Informática</a>
+  <a (click)="filterArea('Logística')" class="waves-effect waves-light btn orange darken-4"><i class="material-icons left">autorenew</i>Logística</a>
+  <a (click)="filterArea('Meio Ambiente')" class="waves-effect waves-light btn orange darken-4"><i class="material-icons left">brightness_5</i>Meio Ambiente</a>
+  <a (click)="filterArea('Saúde')" class="waves-effect waves-light btn orange darken-4"><i class="material-icons left">favorite</i>Saúde</a>
+  <a (click)="filterArea('Outros')" class="waves-effect waves-light btn orange darken-4"><i class="material-icons left">dehaze</i>Outros</a>
 </div>
 <br>
 <div class="container">
   <div class="row">
     <div class="input-field col s12 m6 l4 xl4">
-      <select multiple>
+      <select [(ngModel)]="status">
         <option value="" disabled selected>Escolha a sua opção</option>
-        <option value="1">Em andamento</option>
-        <option value="2">Finalizado</option>
-        <option value="3">Interrompido</option>
+        <option value="">Todos</option>
+        <option value="Em andamento">Em andamento</option>
+        <option value="Finalizado">Finalizado</option>
+        <option value="Interrompido">Interrompido</option>
       </select>
       <label>Status</label>
     </div>
     <div class="input-field col s12 m6 l4 xl4">
-      <select multiple>
+      <select [(ngModel)]="finalidade">
         <option value="" disabled selected>Escolha a sua opção</option>
-        <option value="1">Pesquisa</option>
-        <option value="2">Extensão</option>
-        <option value="3">Desenvolvimento Institucional</option>
-        <option value="3">Desenvolvimento Organizacional</option>
+        <option value="">Todos</option>
+        <option value="Pesquisa">Pesquisa</option>
+        <option value="Extensão">Extensão</option>
+        <option value="Desenvolvimento Institucional">Desenvolvimento Institucional</option>
+        <option value="Desenvolvimento Organizacional">Desenvolvimento Organizacional</option>
       </select>
       <label>Finalidade</label>
     </div>
@@ -67,8 +69,8 @@
       <div class="row">
         <div class="input-field col s12">
           <i class="material-icons prefix">search</i>
-          <input id="first_name" type="text" class="validate">
-          <label for="first_name">Palavra</label>
+          <input [(ngModel)]="titulo" id="first_name" class="validate" type="text" name="titulo">
+          <label for="first_name">Título</label>
         </div>
       </div>
     </form>
@@ -79,7 +81,21 @@
   <div class="container">
     <h4 class="cyan-text text-darken-2"><b>Projetos</b></h4>
     <div class="divider cyan darken-2"></div>
-    <app-projetos></app-projetos>
+    <br>
+    <ul class="collapsible popout">
+      <li *ngFor="let item of projetos | async | filterBy: ['status']: status | filterBy: ['area']: area | filterBy: ['titulo']: titulo | filterBy: ['finalidade']: finalidade">
+        <div class="collapsible-header">{{item.titulo}}</div>
+        <div class="collapsible-body">
+          <p><b class="light-blue-text text-accent-4">Área:</b> {{item.area}}</p>
+          <p><b class="light-blue-text text-accent-4">Status:</b> {{item.status}}</p>
+          <p><b class="light-blue-text text-accent-4">Coordenador:</b> {{item.equipe.coordenador}}</p>
+          <p><b class="light-blue-text text-accent-4">Equipe:</b> {{item.equipe.membros}}</p>
+          <p><b class="light-blue-text text-accent-4">Finalidade:</b> {{item.finalidade}}</p>
+          <p><b class="light-blue-text text-accent-4">Financiamento:</b> {{item.financiamento}}</p>
+          <p><b class="light-blue-text text-accent-4">Aplicabilidade:</b> {{item.aplicabilidade.contexto}}</p>
+        </div>
+      </li>
+    </ul>
   </div>
 
 </div>

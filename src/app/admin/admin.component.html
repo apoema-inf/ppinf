@@ -110,7 +110,7 @@
   <div class="modal-content">
     <h4>Editar Projeto</h4>
     <div class="divider"></div>
-    <form class="col s12">
+    <form (keyup.enter)="editarProjeto(findOneId.id)" class="col s12">
       <div class="row">
         <div class="input-field col s12">
           <input [(ngModel)]="findOneId.titulo" id="titulo" type="text" class="validate" name="titulo" required=""
