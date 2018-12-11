@@ -3,7 +3,7 @@ export class Projeto {
     titulo: string;
     status: string;
     finalidade: string;
-    aporte: string;
+    financiamento: string;
     area: string;
     coordenador: string;
     membros: string;

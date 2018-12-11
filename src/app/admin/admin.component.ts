@@ -17,7 +17,16 @@ declare var M: any;
 export class AdminComponent implements OnInit {
 
   projeto: Projeto = new Projeto();
-  findOneId: any;
+  findOneId: any = {
+    id: '',
+    titulo: '',
+    status: '',
+    finalidade: '',
+    financiamento: '',
+    area: '',
+    equipe: { coordenador: '', membros: '' },
+    aplicabilidade: { contexto: '' }
+  };
   projetos: Observable<Projeto[]>;
 
   constructor(public db: AngularFirestore) {
@@ -45,10 +54,6 @@ export class AdminComponent implements OnInit {
     $('select').formSelect();
   }
 
-  closeModal(string) {
-    $('#' + string).modal({ dismissible: true });
-  }
-
   createProjeto() {
     console.log(this.projeto);
 
@@ -56,13 +61,13 @@ export class AdminComponent implements OnInit {
       titulo: this.projeto.titulo,
       status: this.projeto.status,
       finalidade: this.projeto.finalidade,
-      financiamento: this.projeto.aporte,
+      financiamento: this.projeto.financiamento,
       area: this.projeto.area,
       equipe: { coordenador: this.projeto.coordenador, membros: this.projeto.membros },
       aplicabilidade: { contexto: this.projeto.contexto }
     })
       .then(function (docRef) {
-        $('#create').modal({ dismissible: true });
+        $('#create').modal('close');
         M.toast({ html: 'Projeto criado com sucesso!', classes: 'rounded' });
       })
       .catch(function (error) {
@@ -88,12 +93,33 @@ export class AdminComponent implements OnInit {
 
   deletarProjeto(string) {
     this.db.collection("projetos").doc(string).delete().then(function () {
-      $('#delete').modal({ dismissible: true });
+      $('#delete').modal('close');
       M.toast({ html: 'Projeto deletado com sucesso!', classes: 'rounded' });
     }).catch(function (error) {
       console.log(error);
       M.toast({ html: 'Não foi possivel remover o projeto.', classes: 'rounded' });
     });
+  }
+
+  editarProjeto(string) {
+    var docRef = this.db.collection("projetos").doc(string);
+
+    return docRef.update({
+      titulo: this.findOneId.titulo,
+      status: this.findOneId.status,
+      finalidade: this.findOneId.finalidade,
+      financiamento: this.findOneId.financiamento,
+      area: this.findOneId.area,
+      equipe: { coordenador: this.findOneId.equipe.coordenador, membros: this.findOneId.equipe.membros },
+      aplicabilidade: { contexto: this.findOneId.aplicabilidade.contexto }
+    })
+      .then(function () {
+        $('#edit').modal('close');
+        M.toast({ html: 'Projeto editado com sucesso!', classes: 'rounded' });
+      })
+      .catch(function (error) {
+        M.toast({ html: 'Não foi possivel editar o projeto.', classes: 'rounded' });
+      });
   }
 
 }

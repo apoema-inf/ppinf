@@ -7,3 +7,9 @@
 .collapsible-header {
     margin-bottom: 5px;
 }
+
+.modal.open{
+    max-height: 100%;
+    height: 100%;
+    top: 0 !important;
+}
