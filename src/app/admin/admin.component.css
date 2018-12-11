@@ -1,4 +1,9 @@
 .buttons-projetos {
     margin-top: 10px;
     margin-right: 10px;
+    max-height: 1%;
+}
+
+.collapsible-header {
+    margin-bottom: 5px;
 }

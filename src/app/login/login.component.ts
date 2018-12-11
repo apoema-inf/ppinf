@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, Params } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../services/auth.service';
-
+declare var M:any;
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -11,10 +11,10 @@ import { AuthService } from '../services/auth.service';
 export class LoginComponent {
 
   public email: string;
-  public password: string;
+  private password: string;
 
   constructor(
-    public authService: AuthService,
+    private authService: AuthService,
     public router: Router
   ) { }
 
@@ -25,8 +25,10 @@ export class LoginComponent {
     this.authService.loginEmail(this.email, this.password)
     .then( (res) => {
       this.router.navigate(['/admin']);
+      M.toast({html: 'Usuário Autenticado!', classes: 'rounded'});
     }).catch((err) => {
       this.router.navigate(['/login']);
+      M.toast({html: 'Email ou senha incorretos', classes: 'rounded'});
     });
   }
 

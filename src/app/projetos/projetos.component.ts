@@ -14,8 +14,8 @@ export class ProjetosComponent implements OnInit {
 
   public projetos: Observable<any[]>;
 
-  constructor(db: AngularFirestore) {
-    this.projetos = db.collection('/projetos').valueChanges();
+  constructor(private db: AngularFirestore) {
+    this.projetos = this.db.collection('/projetos').valueChanges();
     console.log(this.projetos);
   }
 

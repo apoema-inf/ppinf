@@ -1,25 +1,141 @@
 <div class="container">
   <div class="row">
     <h4 class="cyan-text text-darken-2"><b>Projetos</b></h4>
-    <a class="waves-effect waves-light btn"><i class="material-icons left">add</i>Novo Projeto</a>
+    <a class="waves-effect waves-light btn modal-trigger" href="#create"><i class="material-icons left">add</i>Novo
+      Projeto</a>
   </div>
 
   <div class="divider cyan darken-2"></div>
   <br>
   <ul class="collapsible popout">
     <li *ngFor="let item of projetos | async">
-      <a class="buttons-projetos btn-floating btn-small waves-effect waves-light red right"><i class="material-icons">delete_forever</i></a>
-      <a class="buttons-projetos btn-floating btn-small waves-effect waves-light blue right"><i class="material-icons">edit</i></a>
+      <a (click)="findOne(item.id)" style="margin-bottom: 0px" class="buttons-projetos btn-floating btn-small waves-effect waves-light red right modal-trigger"
+        href="#delete"><i class="material-icons">delete_forever</i></a>
+      <a class="buttons-projetos btn-floating btn-small waves-effect waves-light blue right modal-trigger" href="#edit"><i
+          class="material-icons">edit</i></a>
       <div class="collapsible-header">{{item.titulo}}</div>
       <div class="collapsible-body">
         <p><b class="light-blue-text text-accent-4">Área:</b> {{item.area}}</p>
         <p><b class="light-blue-text text-accent-4">Status:</b> {{item.status}}</p>
         <p><b class="light-blue-text text-accent-4">Coordenador:</b> {{item.equipe.coordenador}}</p>
-        <p><b class="light-blue-text text-accent-4">Equipe:</b> {{item.equipe.membro}}</p>
+        <p><b class="light-blue-text text-accent-4">Equipe:</b> {{item.equipe.membros}}</p>
         <p><b class="light-blue-text text-accent-4">Finalidade:</b> {{item.finalidade}}</p>
         <p><b class="light-blue-text text-accent-4">Aporte:</b> {{item.financiamento}}</p>
         <p><b class="light-blue-text text-accent-4">Aplicabilidade:</b> {{item.aplicabilidade.contexto}}</p>
       </div>
     </li>
   </ul>
+</div>
+
+<!-- Modal Create -->
+<div id="create" class="modal modal-fixed-footer">
+  <div class="modal-content">
+    <h4>Criar Novo Projeto</h4>
+    <form class="col s12">
+      <div class="row">
+        <div class="input-field col s6">
+          <input [(ngModel)]="projeto.titulo" id="titulo" type="text" class="validate" name="titulo" required=""
+            aria-required="true">
+          <label for="titulo">Nome do Projeto *</label>
+        </div>
+        <div class="input-field col s6">
+          <select [(ngModel)]="projeto.status" name="status">
+            <option value="" disabled selected>Status do Projeto *</option>
+            <option value="Em andamento">Em andamento</option>
+            <option value="Finalizado">Finalizado</option>
+            <option value="Interrompido">Interrompido</option>
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="input-field col s6">
+          <select [(ngModel)]="projeto.area" name="area">
+            <option value="" disabled selected>Área do Projeto *</option>
+            <option value="Agronegócio">Agronegócio</option>
+            <option value="Educação">Educação</option>
+            <option value="Engenharia">Engenharia</option>
+            <option value="Informática">Informática</option>
+            <option value="Logística">Logística</option>
+            <option value="Meio Ambiente">Meio Ambiente</option>
+            <option value="Saúde">Saúde</option>
+            <option value="Outros">Outros</option>
+          </select>
+        </div>
+        <div class="input-field col s6">
+          <select [(ngModel)]="projeto.finalidade" name="finalidade">
+            <option value="" disabled selected>Finalidade do Projeto *</option>
+            <option value="Pesquisa">Pesquisa</option>
+            <option value="Extensão">Extensão</option>
+            <option value="Desenvolvimento Institucional">Desenvolvimento Institucional</option>
+            <option value="Desenvolvimento Organizacional">Desenvolvimento Organizacional</option>
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="input-field col s6">
+          <input [(ngModel)]="projeto.aporte" id="aporte" type="text" class="validate" name="aporte" required=""
+            aria-required="true">
+          <label for="aporte">Aporte do Projeto</label>
+        </div>
+        <div class="input-field col s6">
+          <input [(ngModel)]="projeto.coordenador" id="coordenador" type="text" class="validate" name="coordenador">
+          <label for="coordenador">Coordenador do Projeto *</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="input-field col s12">
+          <textarea [(ngModel)]="projeto.membros" id="membros" class="materialize-textarea" name="membros" required=""
+            aria-required="true"></textarea>
+          <label for="membros">Membros do Projeto *</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="input-field col s12">
+          <textarea [(ngModel)]="projeto.contexto" id="contexto" class="materialize-textarea" name="contexto" required=""
+            aria-required="true"></textarea>
+          <label for="contexto">Contexto do Projeto *</label>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <a style="margin-right:20px" (click)="closeModal('create')" class="waves-effect waves-light btn red">Cancelar</a>
+    <a class="waves-effect waves-light btn green" (click)="createProjeto(projeto)">Criar</a>
+  </div>
+</div>
+
+<!-- Modal Edit -->
+<div id="edit" class="modal modal-fixed-footer">
+  <div class="modal-content">
+    <h4>Editar Projeto</h4>
+    <p>A bunch of text</p>
+  </div>
+  <div class="modal-footer">
+    <a style="margin-right:20px" (click)="closeModal('edit')" class="waves-effect waves-light btn red">Cancelar</a>
+    <a class="waves-effect waves-light btn green">Editar</a>
+  </div>
+</div>
+
+<!-- Modal Delete -->
+<div id="delete" class="modal modal-fixed-footer">
+  <div class="modal-content">
+    <h4>Deletar Projeto</h4>
+    <div class="divider"></div>
+    <div *ngIf="findOneId">
+      <p><b class="light-blue-text text-accent-4">Título:</b> {{findOneId.titulo}}</p>
+      <p><b class="light-blue-text text-accent-4">Área:</b> {{findOneId.area}}</p>
+      <p><b class="light-blue-text text-accent-4">Status:</b> {{findOneId.status}}</p>
+      <p><b class="light-blue-text text-accent-4">Coordenador:</b> {{findOneId.equipe.coordenador}}</p>
+      <p><b class="light-blue-text text-accent-4">Equipe:</b> {{findOneId.equipe.membros}}</p>
+      <p><b class="light-blue-text text-accent-4">Finalidade:</b> {{findOneId.finalidade}}</p>
+      <p><b class="light-blue-text text-accent-4">Aporte:</b> {{findOneId.financiamento}}</p>
+      <p><b class="light-blue-text text-accent-4">Aplicabilidade:</b> {{findOneId.aplicabilidade.contexto}}</p>
+    </div>
+
+  </div>
+  <div class="modal-footer" align="center">
+    Deseja realmente excluir este projeto?
+    <a style="margin-left:40px; margin-right:40px" (click)="closeModal('delete')" class="waves-effect waves-light btn red">Cancelar</a>
+    <a style="margin-right:20px" (click)="deletarProjeto(findOneId.id)" class="waves-effect waves-light btn green">Deletar</a>
+  </div>
 </div>
