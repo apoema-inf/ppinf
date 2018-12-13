@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AngularFirestore } from 'angularfire2/firestore';
-declare var $:any;
+declare var $: any;
 
 @Component({
   selector: 'app-inicio',
@@ -24,7 +24,7 @@ export class InicioComponent implements OnInit {
   finalidade: string;
 
   ngOnInit() {
-    $(document).ready(function(){
+    $(document).ready(function () {
       $('.slider').slider();
       $('select').formSelect();
       $('.collapsible').collapsible();

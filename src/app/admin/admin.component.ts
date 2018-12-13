@@ -70,6 +70,14 @@ export class AdminComponent implements OnInit {
       this.projeto.financiamento = "Não há";
     }
 
+    // Show full page LoadingOverlay
+    $.LoadingOverlay("show");
+
+    // Hide it after 3 seconds
+    setTimeout(function () {
+      $.LoadingOverlay("hide");
+    }, 1300);
+    
     this.db.collection("projetos").add({
       titulo: this.projeto.titulo,
       status: this.projeto.status,
@@ -80,6 +88,7 @@ export class AdminComponent implements OnInit {
       aplicabilidade: { contexto: this.projeto.contexto }
     })
       .then(function (docRef) {
+
         $('#create').modal('close');
         M.toast({ html: 'Projeto criado com sucesso!', classes: 'rounded' });
       })
@@ -87,10 +96,11 @@ export class AdminComponent implements OnInit {
         M.toast({ html: error, classes: 'rounded' });
       });
 
-      this.projeto = new Projeto();
+    this.projeto = new Projeto();
   }
 
-  findOne(string) {
+  findOne(string, quem) {
+    $("#" + quem).LoadingOverlay("show");
     var docRef = this.db.collection("projetos").doc(string);
 
     docRef.ref.
@@ -99,6 +109,7 @@ export class AdminComponent implements OnInit {
           this.findOneId = documentSnapshot.data();
           this.findOneId.id = documentSnapshot.id;
           console.log("Document data:", documentSnapshot.data());
+          $("#" + quem).LoadingOverlay("hide", true);
         } else {
           // doc.data() will be undefined in this case
           console.log("No such document!");
@@ -135,7 +146,7 @@ export class AdminComponent implements OnInit {
       .catch(function (error) {
         M.toast({ html: 'Não foi possivel editar o projeto.', classes: 'rounded' });
       });
-      
+
   }
 
 }

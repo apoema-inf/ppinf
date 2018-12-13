@@ -37,14 +37,15 @@
   <a (click)="filterArea('Engenharia')" class="waves-effect waves-light btn orange darken-4"><i class="material-icons left">build</i>Engenharia</a>
   <a (click)="filterArea('Informática')" class="waves-effect waves-light btn orange darken-4"><i class="material-icons left">http</i>Informática</a>
   <a (click)="filterArea('Logística')" class="waves-effect waves-light btn orange darken-4"><i class="material-icons left">autorenew</i>Logística</a>
-  <a (click)="filterArea('Meio Ambiente')" class="waves-effect waves-light btn orange darken-4"><i class="material-icons left">brightness_5</i>Meio Ambiente</a>
+  <a (click)="filterArea('Meio Ambiente')" class="waves-effect waves-light btn orange darken-4"><i class="material-icons left">brightness_5</i>Meio
+    Ambiente</a>
   <a (click)="filterArea('Saúde')" class="waves-effect waves-light btn orange darken-4"><i class="material-icons left">favorite</i>Saúde</a>
   <a (click)="filterArea('Outros')" class="waves-effect waves-light btn orange darken-4"><i class="material-icons left">dehaze</i>Outros</a>
 </div>
 <br>
 <div class="container">
   <div class="row">
-    <div class="input-field col s12 m6 l4 xl4">
+    <div class="input-field col s4">
       <select [(ngModel)]="status">
         <option value="" disabled selected>Escolha a sua opção</option>
         <option value="">Todos</option>
@@ -54,7 +55,7 @@
       </select>
       <label>Status</label>
     </div>
-    <div class="input-field col s12 m6 l4 xl4">
+    <div class="input-field col s4">
       <select [(ngModel)]="finalidade">
         <option value="" disabled selected>Escolha a sua opção</option>
         <option value="">Todos</option>
@@ -65,12 +66,12 @@
       </select>
       <label>Finalidade</label>
     </div>
-    <form class="col s12 m6 l4 xl4">
+    <form class="col s4">
       <div class="row">
         <div class="input-field col s12">
           <i class="material-icons prefix">search</i>
           <input [(ngModel)]="titulo" id="first_name" class="validate" type="text" name="titulo">
-          <label for="first_name">Título</label>
+          <label for="first_name">Busque por título, equipe ou aporte</label>
         </div>
       </div>
     </form>
@@ -83,7 +84,7 @@
     <div class="divider cyan darken-2"></div>
     <br>
     <ul class="collapsible popout">
-      <li *ngFor="let item of projetos | async | filterBy: ['status']: status | filterBy: ['area']: area | filterBy: ['titulo']: titulo | filterBy: ['finalidade']: finalidade">
+      <li *ngFor="let item of projetos | async | filterBy: ['status']: status | filterBy: ['area']: area | filterBy: ['titulo', 'equipe.membros', 'equipe.coordenador', 'financiamento']: titulo | filterBy: ['finalidade']: finalidade">
         <div class="collapsible-header">{{item.titulo}}</div>
         <div class="collapsible-body">
           <p><b class="light-blue-text text-accent-4">Área:</b> {{item.area}}</p>
