@@ -55,7 +55,20 @@ export class AdminComponent implements OnInit {
   }
 
   createProjeto() {
-    console.log(this.projeto);
+    if (this.projeto.titulo == (null || '' || undefined) ||
+      this.projeto.area == (null || '' || undefined) ||
+      this.projeto.contexto == (null || '' || undefined) ||
+      this.projeto.status == (null || '' || undefined) ||
+      this.projeto.coordenador == (null || '' || undefined) ||
+      this.projeto.finalidade == (null || '' || undefined) ||
+      this.projeto.membros == (null || '' || undefined)) {
+      M.toast({ html: 'Preencha todos os campos obrigatório.', classes: 'rounded' });
+      return;
+    }
+
+    if (this.projeto.financiamento == (null || '' || undefined)) {
+      this.projeto.financiamento = "Não há";
+    }
 
     this.db.collection("projetos").add({
       titulo: this.projeto.titulo,
@@ -73,6 +86,8 @@ export class AdminComponent implements OnInit {
       .catch(function (error) {
         M.toast({ html: error, classes: 'rounded' });
       });
+
+      this.projeto = new Projeto();
   }
 
   findOne(string) {
@@ -120,6 +135,7 @@ export class AdminComponent implements OnInit {
       .catch(function (error) {
         M.toast({ html: 'Não foi possivel editar o projeto.', classes: 'rounded' });
       });
+      
   }
 
 }
