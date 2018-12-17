@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AngularFirestore } from 'angularfire2/firestore';
+import { Projeto } from '../models/projeto.model';
+import { map } from 'rxjs/operators';
+import { AngularFireStorage } from 'angularfire2/storage';
 declare var $: any;
 
 @Component({
@@ -11,11 +14,26 @@ declare var $: any;
 })
 export class InicioComponent implements OnInit {
 
-  public projetos: Observable<any[]>;
+  projetos: Observable<Projeto[]>;
+  downloadURL: Observable<any>;
 
-  constructor(private db: AngularFirestore) {
-    this.projetos = this.db.collection('/projetos').valueChanges();
-    console.log(this.projetos);
+  constructor(private db: AngularFirestore, private storage: AngularFireStorage) {
+    this.projetos = db.collection('projetos').snapshotChanges().pipe(map(
+
+      changes => {
+
+        return changes.map(
+
+          a => {
+
+            const data = a.payload.doc.data() as Projeto;
+
+            data.id = a.payload.doc.id;
+
+            return data;
+
+          });
+      }));
   }
 
   titulo: string = '';

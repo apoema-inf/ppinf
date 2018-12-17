@@ -15,6 +15,7 @@
         href="#edit"><i class="material-icons">edit</i></a>
       <div class="collapsible-header">{{item.titulo}}</div>
       <div class="collapsible-body">
+        <img *ngIf="item.imgUrl" style="max-height:200px" src="{{item.imgUrl}}" alt="" class="responsive-img"> <!-- notice the "circle" class -->
         <p><b class="light-blue-text text-accent-4">Área:</b> {{item.area}}</p>
         <p><b class="light-blue-text text-accent-4">Status:</b> {{item.status}}</p>
         <p><b class="light-blue-text text-accent-4">Coordenador:</b> {{item.equipe.coordenador}}</p>
@@ -94,6 +95,19 @@
           <textarea [(ngModel)]="projeto.contexto" id="contexto" class="materialize-textarea" name="contexto" required=""
             aria-required="true"></textarea>
           <label for="contexto">Contexto do Projeto *</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col s12">
+          <div class="file-field input-field">
+            <div class="btn">
+              <span>Imagem do projeto</span>
+              <input type="file" (change)="chooseFiles($event)">
+            </div>
+            <div class="file-path-wrapper">
+              <input class="file-path validate" type="text">
+            </div>
+          </div>
         </div>
       </div>
     </form>

@@ -18,6 +18,7 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { ProjetosComponent } from './projetos/projetos.component';
 import { FooterComponent } from './footer/footer.component';
 import {NgPipesModule} from 'ngx-pipes';
+import { AngularFireStorageModule } from 'angularfire2/storage';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import {NgPipesModule} from 'ngx-pipes';
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
     AngularFireAuthModule,
-    NgPipesModule
+    NgPipesModule,
+    AngularFireStorageModule
   ],
   providers: [AuthService, AuthGuard],
   bootstrap: [AppComponent]

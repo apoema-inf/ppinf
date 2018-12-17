@@ -87,6 +87,8 @@
       <li *ngFor="let item of projetos | async | filterBy: ['status']: status | filterBy: ['area']: area | filterBy: ['titulo', 'equipe.membros', 'equipe.coordenador', 'financiamento']: titulo | filterBy: ['finalidade']: finalidade">
         <div class="collapsible-header">{{item.titulo}}</div>
         <div class="collapsible-body">
+          <img *ngIf="item.imgUrl" style="max-height:200px" src="{{item.imgUrl}}" alt="" class="responsive-img">
+          <!-- notice the "circle" class -->
           <p><b class="light-blue-text text-accent-4">Área:</b> {{item.area}}</p>
           <p><b class="light-blue-text text-accent-4">Status:</b> {{item.status}}</p>
           <p><b class="light-blue-text text-accent-4">Coordenador:</b> {{item.equipe.coordenador}}</p>

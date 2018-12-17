@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Projeto } from '../models/projeto.model';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, finalize } from 'rxjs/operators';
+import { AngularFireStorage, AngularFireUploadTask, AngularFireStorageReference } from 'angularfire2/storage';
 
 declare var $: any;
 declare var M: any;
@@ -12,11 +12,14 @@ declare var M: any;
   selector: 'app-admin',
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.css'],
-  providers: [AngularFirestore]
+  providers: [AngularFirestore, Projeto]
 })
 export class AdminComponent implements OnInit {
 
-  projeto: Projeto = new Projeto();
+  ref: AngularFireStorageReference;
+  downloadURL: Observable<any>;
+  selectedFiles: FileList;
+  file: File;
   findOneId: any = {
     id: '',
     titulo: '',
@@ -28,8 +31,9 @@ export class AdminComponent implements OnInit {
     aplicabilidade: { contexto: '' }
   };
   projetos: Observable<Projeto[]>;
+  projeto: Projeto = new Projeto();
 
-  constructor(public db: AngularFirestore) {
+  constructor(private db: AngularFirestore, private storage: AngularFireStorage) {
     this.projetos = db.collection('projetos').snapshotChanges().pipe(map(
 
       changes => {
@@ -46,6 +50,23 @@ export class AdminComponent implements OnInit {
 
           });
       }));
+  }
+
+  chooseFiles(event) {
+    this.selectedFiles = event.target.files;
+  }
+
+  uploadpic() {
+    var that = this;
+    let file = this.selectedFiles.item(0);
+    this.storage.upload('/imagens/projeto-' + that.projeto.img, file).then(function (snapshot) {
+      snapshot.ref.getDownloadURL().then(downloadURL => {
+        that.projeto.img = downloadURL;
+      }).then(function () {
+        that.criarProjeto();
+      })
+    })
+
   }
 
   ngOnInit() {
@@ -73,11 +94,35 @@ export class AdminComponent implements OnInit {
     // Show full page LoadingOverlay
     $.LoadingOverlay("show");
 
-    // Hide it after 3 seconds
-    setTimeout(function () {
-      $.LoadingOverlay("hide");
-    }, 1300);
-    
+    if (this.selectedFiles == (null || undefined)) {
+      this.db.collection("projetos").add({
+        titulo: this.projeto.titulo,
+        status: this.projeto.status,
+        finalidade: this.projeto.finalidade,
+        financiamento: this.projeto.financiamento,
+        area: this.projeto.area,
+        equipe: { coordenador: this.projeto.coordenador, membros: this.projeto.membros },
+        aplicabilidade: { contexto: this.projeto.contexto }
+      })
+        .then(function (docRef) {
+          $('#create').modal('close');
+          M.toast({ html: 'Projeto criado com sucesso!', classes: 'rounded' });
+          $.LoadingOverlay("hide");
+          
+        })
+        .catch(function (error) {
+          M.toast({ html: 'Não foi possível criar o projeto', classes: 'rounded' });
+          $.LoadingOverlay("hide");
+        });
+    } else {
+      this.uploadpic();
+    }
+
+    this.projeto = new Projeto();
+
+  }
+
+  criarProjeto() {
     this.db.collection("projetos").add({
       titulo: this.projeto.titulo,
       status: this.projeto.status,
@@ -85,18 +130,21 @@ export class AdminComponent implements OnInit {
       financiamento: this.projeto.financiamento,
       area: this.projeto.area,
       equipe: { coordenador: this.projeto.coordenador, membros: this.projeto.membros },
-      aplicabilidade: { contexto: this.projeto.contexto }
+      aplicabilidade: { contexto: this.projeto.contexto },
+      imgUrl: this.projeto.img
     })
       .then(function (docRef) {
-
         $('#create').modal('close');
         M.toast({ html: 'Projeto criado com sucesso!', classes: 'rounded' });
+        $.LoadingOverlay("hide");
+        
       })
       .catch(function (error) {
-        M.toast({ html: error, classes: 'rounded' });
+        M.toast({ html: 'Não foi possível criar o projeto', classes: 'rounded' });
+        $.LoadingOverlay("hide");
       });
 
-    this.projeto = new Projeto();
+      this.projeto = new Projeto();
   }
 
   findOne(string, quem) {
