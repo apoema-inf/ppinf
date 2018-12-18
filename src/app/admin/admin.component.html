@@ -15,7 +15,7 @@
         href="#edit"><i class="material-icons">edit</i></a>
       <div class="collapsible-header">{{item.titulo}}</div>
       <div class="collapsible-body">
-        <img *ngIf="item.imgUrl" style="max-height:200px" src="{{item.imgUrl}}" alt="" class="circle responsive-img">
+        <img *ngIf="item.imgUrl" style="max-height:200px" src="{{item.imgUrl}}" alt="" class="center circle responsive-img">
         <p><b class="light-blue-text text-accent-4">Área:</b> {{item.area}}</p>
         <p><b class="light-blue-text text-accent-4">Status:</b> {{item.status}}</p>
         <p><b class="light-blue-text text-accent-4">Coordenador:</b> {{item.equipe.coordenador}}</p>
@@ -85,15 +85,15 @@
       </div>
       <div class="row">
         <div class="input-field col s12">
-          <textarea [(ngModel)]="projeto.membros" id="membros" class="materialize-textarea validate" name="membros" required=""
-            aria-required="true"></textarea>
+          <textarea [(ngModel)]="projeto.membros" id="membros" class="materialize-textarea validate" name="membros"
+            required="" aria-required="true"></textarea>
           <label for="membros">Membros do Projeto *</label>
         </div>
       </div>
       <div class="row">
         <div class="input-field col s12">
-          <textarea [(ngModel)]="projeto.contexto" id="contexto" class="materialize-textarea validate" name="contexto" required=""
-            aria-required="true"></textarea>
+          <textarea [(ngModel)]="projeto.contexto" id="contexto" class="materialize-textarea validate" name="contexto"
+            required="" aria-required="true"></textarea>
           <label for="contexto">Contexto do Projeto *</label>
         </div>
       </div>
@@ -182,14 +182,24 @@
       </div>
       <div class="row">
         <div class="input-field col s12">
-          <textarea [(ngModel)]="findOneId.aplicabilidade.contexto" id="contexto" class="materialize-textarea validate" name="contexto"
-            required="" aria-required="true"></textarea>
+          <textarea [(ngModel)]="findOneId.aplicabilidade.contexto" id="contexto" class="materialize-textarea validate"
+            name="contexto" required="" aria-required="true"></textarea>
           <label for="contexto" class="active">Contexto do Projeto *</label>
         </div>
       </div>
-      <div class="row">
+      <div *ngIf="findOneId.imgUrl" class="row">
         <div class="col s12">
-          <img *ngIf="findOneId.imgUrl" style="max-height:100px" src="{{findOneId.imgUrl}}" alt="" class="circle responsive-img">
+          <img style="max-height:100px" src="{{findOneId.imgUrl}}" alt="" class="circle responsive-img">
+          <p>
+            <label>
+              <input name="check" [(ngModel)]="check" type="checkbox" class="filled-in" />
+              <span >Deixar o projeto sem qualquer imagem</span>
+            </label>
+          </p>
+        </div>
+      </div>
+      <div *ngIf="!check" class="row">
+        <div class="col s12">
           <div class="file-field input-field">
             <div class="btn">
               <span>Editar a imagem do projeto</span>

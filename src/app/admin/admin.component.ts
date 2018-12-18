@@ -3,7 +3,8 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { Projeto } from '../models/projeto.model';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { AngularFireStorage, AngularFireStorageReference } from 'angularfire2/storage';
+import { AngularFireStorage } from 'angularfire2/storage';
+import * as firebase from 'firebase';
 
 declare var $: any;
 declare var M: any;
@@ -16,6 +17,8 @@ declare var M: any;
 })
 export class AdminComponent implements OnInit {
 
+  //Checar se o projeto fica sem qualquer imagem ao editar
+  check = false;
   selectedFiles: FileList;
   file: File;
   findOneId: any = {
@@ -198,106 +201,131 @@ export class AdminComponent implements OnInit {
     var that = this;
     var docRef = this.db.collection("projetos").doc(string);
 
-    if (this.findOneId.imgUrl == (null || undefined)) {
-      if (this.selectedFiles == (null || undefined)) {
-        return docRef.update({
-          titulo: this.findOneId.titulo,
-          status: this.findOneId.status,
-          finalidade: this.findOneId.finalidade,
-          financiamento: this.findOneId.financiamento,
-          area: this.findOneId.area,
-          equipe: { coordenador: this.findOneId.equipe.coordenador, membros: this.findOneId.equipe.membros },
-          aplicabilidade: { contexto: this.findOneId.aplicabilidade.contexto }
+    if (this.check) {
+      // Delete the file
+      this.storage.ref('/imagens/').child('projeto-' + this.tituloAntigo).delete();
+      return docRef.update({
+        titulo: this.findOneId.titulo,
+        status: this.findOneId.status,
+        finalidade: this.findOneId.finalidade,
+        financiamento: this.findOneId.financiamento,
+        area: this.findOneId.area,
+        equipe: { coordenador: this.findOneId.equipe.coordenador, membros: this.findOneId.equipe.membros },
+        aplicabilidade: { contexto: this.findOneId.aplicabilidade.contexto },
+        imgUrl: firebase.firestore.FieldValue.delete()
+      })
+        .then(function () {
+          $('#edit').modal('close');
+          M.toast({ html: 'Projeto editado com sucesso!', classes: 'rounded' });
+          $.LoadingOverlay("hide");
         })
-          .then(function () {
-            $('#edit').modal('close');
-            M.toast({ html: 'Projeto editado com sucesso!', classes: 'rounded' });
-            $.LoadingOverlay("hide");
-          })
-          .catch(function (error) {
-            M.toast({ html: 'Não foi possivel editar o projeto.', classes: 'rounded' });
-            $.LoadingOverlay("hide");
-          });
-      } else {
-
-        this.storage.upload('/imagens/projeto-' + this.findOneId.titulo, this.selectedFiles.item(0)).then(function (snapshot) {
-          snapshot.ref.getDownloadURL().then(downloadURL => {
-            url = downloadURL;
-          }).then(function () {
-            return docRef.update({
-              titulo: that.findOneId.titulo,
-              status: that.findOneId.status,
-              finalidade: that.findOneId.finalidade,
-              financiamento: that.findOneId.financiamento,
-              area: that.findOneId.area,
-              equipe: { coordenador: that.findOneId.equipe.coordenador, membros: that.findOneId.equipe.membros },
-              aplicabilidade: { contexto: that.findOneId.aplicabilidade.contexto },
-              imgUrl: url
-            })
-              .then(function () {
-                $('#edit').modal('close');
-                M.toast({ html: 'Projeto editado com sucesso!', classes: 'rounded' });
-                $.LoadingOverlay("hide");
-              })
-              .catch(function (error) {
-                M.toast({ html: 'Não foi possivel editar o projeto.', classes: 'rounded' });
-                $.LoadingOverlay("hide");
-              });
-          })
-        })
-      }
+        .catch(function (error) {
+          M.toast({ html: 'Não foi possivel editar o projeto.', classes: 'rounded' });
+          $.LoadingOverlay("hide");
+        });
     } else {
-      if (this.selectedFiles != (null || undefined)) {
-
-        // Delete the file
-        this.storage.ref('/imagens/').child('projeto-' + this.tituloAntigo).delete();
-        this.storage.upload('/imagens/projeto-' + this.findOneId.titulo, this.selectedFiles.item(0)).then(function (snapshot) {
-          snapshot.ref.getDownloadURL().then(downloadURL => {
-            url = downloadURL;
-          }).then(function () {
-            return docRef.update({
-              titulo: that.findOneId.titulo,
-              status: that.findOneId.status,
-              finalidade: that.findOneId.finalidade,
-              financiamento: that.findOneId.financiamento,
-              area: that.findOneId.area,
-              equipe: { coordenador: that.findOneId.equipe.coordenador, membros: that.findOneId.equipe.membros },
-              aplicabilidade: { contexto: that.findOneId.aplicabilidade.contexto },
-              imgUrl: url
+      if (this.findOneId.imgUrl == (null || undefined)) {
+        if (this.selectedFiles == (null || undefined)) {
+          return docRef.update({
+            titulo: this.findOneId.titulo,
+            status: this.findOneId.status,
+            finalidade: this.findOneId.finalidade,
+            financiamento: this.findOneId.financiamento,
+            area: this.findOneId.area,
+            equipe: { coordenador: this.findOneId.equipe.coordenador, membros: this.findOneId.equipe.membros },
+            aplicabilidade: { contexto: this.findOneId.aplicabilidade.contexto }
+          })
+            .then(function () {
+              $('#edit').modal('close');
+              M.toast({ html: 'Projeto editado com sucesso!', classes: 'rounded' });
+              $.LoadingOverlay("hide");
             })
-              .then(function () {
-                $('#edit').modal('close');
-                M.toast({ html: 'Projeto editado com sucesso!', classes: 'rounded' });
-                $.LoadingOverlay("hide");
-              })
-              .catch(function (error) {
-                M.toast({ html: 'Não foi possivel editar o projeto.', classes: 'rounded' });
-                $.LoadingOverlay("hide");
-              });
-          })
-        })
+            .catch(function (error) {
+              M.toast({ html: 'Não foi possivel editar o projeto.', classes: 'rounded' });
+              $.LoadingOverlay("hide");
+            });
+        } else {
 
-      } else {
-        return docRef.update({
-          titulo: this.findOneId.titulo,
-          status: this.findOneId.status,
-          finalidade: this.findOneId.finalidade,
-          financiamento: this.findOneId.financiamento,
-          area: this.findOneId.area,
-          equipe: { coordenador: this.findOneId.equipe.coordenador, membros: this.findOneId.equipe.membros },
-          aplicabilidade: { contexto: this.findOneId.aplicabilidade.contexto },
-          imgUrl: this.findOneId.imgUrl
-        })
-          .then(function () {
-            $('#edit').modal('close');
-            M.toast({ html: 'Projeto editado com sucesso!', classes: 'rounded' });
-            $.LoadingOverlay("hide");
+          this.storage.upload('/imagens/projeto-' + this.findOneId.titulo, this.selectedFiles.item(0)).then(function (snapshot) {
+            snapshot.ref.getDownloadURL().then(downloadURL => {
+              url = downloadURL;
+            }).then(function () {
+              return docRef.update({
+                titulo: that.findOneId.titulo,
+                status: that.findOneId.status,
+                finalidade: that.findOneId.finalidade,
+                financiamento: that.findOneId.financiamento,
+                area: that.findOneId.area,
+                equipe: { coordenador: that.findOneId.equipe.coordenador, membros: that.findOneId.equipe.membros },
+                aplicabilidade: { contexto: that.findOneId.aplicabilidade.contexto },
+                imgUrl: url
+              })
+                .then(function () {
+                  $('#edit').modal('close');
+                  M.toast({ html: 'Projeto editado com sucesso!', classes: 'rounded' });
+                  $.LoadingOverlay("hide");
+                })
+                .catch(function (error) {
+                  M.toast({ html: 'Não foi possivel editar o projeto.', classes: 'rounded' });
+                  $.LoadingOverlay("hide");
+                });
+            })
           })
-          .catch(function (error) {
-            M.toast({ html: 'Não foi possivel editar o projeto.', classes: 'rounded' });
-            $.LoadingOverlay("hide");
-          });
+        }
+      } else {
+        if (this.selectedFiles != (null || undefined)) {
+
+          // Delete the file
+          this.storage.ref('/imagens/').child('projeto-' + this.tituloAntigo).delete();
+          this.storage.upload('/imagens/projeto-' + this.findOneId.titulo, this.selectedFiles.item(0)).then(function (snapshot) {
+            snapshot.ref.getDownloadURL().then(downloadURL => {
+              url = downloadURL;
+            }).then(function () {
+              return docRef.update({
+                titulo: that.findOneId.titulo,
+                status: that.findOneId.status,
+                finalidade: that.findOneId.finalidade,
+                financiamento: that.findOneId.financiamento,
+                area: that.findOneId.area,
+                equipe: { coordenador: that.findOneId.equipe.coordenador, membros: that.findOneId.equipe.membros },
+                aplicabilidade: { contexto: that.findOneId.aplicabilidade.contexto },
+                imgUrl: url
+              })
+                .then(function () {
+                  $('#edit').modal('close');
+                  M.toast({ html: 'Projeto editado com sucesso!', classes: 'rounded' });
+                  $.LoadingOverlay("hide");
+                })
+                .catch(function (error) {
+                  M.toast({ html: 'Não foi possivel editar o projeto.', classes: 'rounded' });
+                  $.LoadingOverlay("hide");
+                });
+            })
+          })
+
+        } else {
+          return docRef.update({
+            titulo: this.findOneId.titulo,
+            status: this.findOneId.status,
+            finalidade: this.findOneId.finalidade,
+            financiamento: this.findOneId.financiamento,
+            area: this.findOneId.area,
+            equipe: { coordenador: this.findOneId.equipe.coordenador, membros: this.findOneId.equipe.membros },
+            aplicabilidade: { contexto: this.findOneId.aplicabilidade.contexto },
+            imgUrl: this.findOneId.imgUrl
+          })
+            .then(function () {
+              $('#edit').modal('close');
+              M.toast({ html: 'Projeto editado com sucesso!', classes: 'rounded' });
+              $.LoadingOverlay("hide");
+            })
+            .catch(function (error) {
+              M.toast({ html: 'Não foi possivel editar o projeto.', classes: 'rounded' });
+              $.LoadingOverlay("hide");
+            });
+        }
       }
+
     }
   }
 
