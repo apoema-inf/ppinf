@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Projeto } from '../models/projeto.model';
 import { Observable } from 'rxjs';
-import { map, finalize } from 'rxjs/operators';
-import { AngularFireStorage, AngularFireUploadTask, AngularFireStorageReference } from 'angularfire2/storage';
+import { map } from 'rxjs/operators';
+import { AngularFireStorage, AngularFireStorageReference } from 'angularfire2/storage';
 
 declare var $: any;
 declare var M: any;
@@ -16,8 +16,6 @@ declare var M: any;
 })
 export class AdminComponent implements OnInit {
 
-  ref: AngularFireStorageReference;
-  downloadURL: Observable<any>;
   selectedFiles: FileList;
   file: File;
   findOneId: any = {
@@ -32,6 +30,8 @@ export class AdminComponent implements OnInit {
   };
   projetos: Observable<Projeto[]>;
   projeto: Projeto = new Projeto();
+  //Guarda título antigo p/ excluir file ao editar projeto
+  tituloAntigo: any;
 
   constructor(private db: AngularFirestore, private storage: AngularFireStorage) {
     this.projetos = db.collection('projetos').snapshotChanges().pipe(map(
@@ -52,29 +52,44 @@ export class AdminComponent implements OnInit {
       }));
   }
 
-  chooseFiles(event) {
-    this.selectedFiles = event.target.files;
-  }
-
-  uploadpic() {
-    var that = this;
-    let file = this.selectedFiles.item(0);
-    this.storage.upload('/imagens/projeto-' + that.projeto.img, file).then(function (snapshot) {
-      snapshot.ref.getDownloadURL().then(downloadURL => {
-        that.projeto.img = downloadURL;
-      }).then(function () {
-        that.criarProjeto();
-      })
-    })
-
-  }
-
   ngOnInit() {
     $('.collapsible').collapsible();
     $('.modal').modal();
     $('select').formSelect();
   }
 
+  //Capturando imagem selecionada
+  chooseFiles(event) {
+    this.selectedFiles = event.target.files;
+  }
+
+  //Upload da imagem selecionada para o Firebase Storage
+  uploadpic() {
+    var that = this;
+    let file = this.selectedFiles.item(0);
+    this.storage.upload('/imagens/projeto-' + that.projeto.titulo, file).then(function (snapshot) {
+      snapshot.ref.getDownloadURL().then(downloadURL => {
+        that.projeto.img = downloadURL;
+      }).then(function () {
+        that.createProjetoImg();
+      })
+    })
+  }
+
+  //Upload da imagem selecionada para o Firebase Storage quando editar o projeto
+  uploadpicEdit() {
+    var that = this;
+    let file = this.selectedFiles.item(0);
+    this.storage.upload('/imagens/projeto-' + that.findOneId.titulo, file).then(function (snapshot) {
+      snapshot.ref.getDownloadURL().then(downloadURL => {
+        that.findOneId.img = downloadURL;
+      }).then(function () {
+        that.createProjetoImg();
+      })
+    })
+  }
+
+  //Criar projeto sem img
   createProjeto() {
     if (this.projeto.titulo == (null || '' || undefined) ||
       this.projeto.area == (null || '' || undefined) ||
@@ -88,7 +103,7 @@ export class AdminComponent implements OnInit {
     }
 
     if (this.projeto.financiamento == (null || '' || undefined)) {
-      this.projeto.financiamento = "Não há";
+      this.projeto.financiamento = "Sem Financiamento";
     }
 
     // Show full page LoadingOverlay
@@ -108,7 +123,7 @@ export class AdminComponent implements OnInit {
           $('#create').modal('close');
           M.toast({ html: 'Projeto criado com sucesso!', classes: 'rounded' });
           $.LoadingOverlay("hide");
-          
+          (document.getElementById('myForm') as HTMLFormElement).reset();
         })
         .catch(function (error) {
           M.toast({ html: 'Não foi possível criar o projeto', classes: 'rounded' });
@@ -118,11 +133,10 @@ export class AdminComponent implements OnInit {
       this.uploadpic();
     }
 
-    this.projeto = new Projeto();
-
   }
 
-  criarProjeto() {
+  //Criar projeto com img
+  createProjetoImg() {
     this.db.collection("projetos").add({
       titulo: this.projeto.titulo,
       status: this.projeto.status,
@@ -137,14 +151,13 @@ export class AdminComponent implements OnInit {
         $('#create').modal('close');
         M.toast({ html: 'Projeto criado com sucesso!', classes: 'rounded' });
         $.LoadingOverlay("hide");
-        
+        (document.getElementById('myForm') as HTMLFormElement).reset();
       })
       .catch(function (error) {
         M.toast({ html: 'Não foi possível criar o projeto', classes: 'rounded' });
         $.LoadingOverlay("hide");
       });
 
-      this.projeto = new Projeto();
   }
 
   findOne(string, quem) {
@@ -155,6 +168,7 @@ export class AdminComponent implements OnInit {
       get().then(documentSnapshot => {
         if (documentSnapshot.exists) {
           this.findOneId = documentSnapshot.data();
+          this.tituloAntigo = documentSnapshot.data().titulo;
           this.findOneId.id = documentSnapshot.id;
           console.log("Document data:", documentSnapshot.data());
           $("#" + quem).LoadingOverlay("hide", true);
@@ -165,10 +179,13 @@ export class AdminComponent implements OnInit {
       });
   }
 
-  deletarProjeto(string) {
+  deletarProjeto(string, titulo) {
+    var that = this;
     this.db.collection("projetos").doc(string).delete().then(function () {
       $('#delete').modal('close');
       M.toast({ html: 'Projeto deletado com sucesso!', classes: 'rounded' });
+      // Delete the file
+      that.storage.ref('/imagens/').child('projeto-' + titulo).delete();
     }).catch(function (error) {
       console.log(error);
       M.toast({ html: 'Não foi possivel remover o projeto.', classes: 'rounded' });
@@ -176,25 +193,112 @@ export class AdminComponent implements OnInit {
   }
 
   editarProjeto(string) {
+    $.LoadingOverlay("show");
+    var url;
+    var that = this;
     var docRef = this.db.collection("projetos").doc(string);
 
-    return docRef.update({
-      titulo: this.findOneId.titulo,
-      status: this.findOneId.status,
-      finalidade: this.findOneId.finalidade,
-      financiamento: this.findOneId.financiamento,
-      area: this.findOneId.area,
-      equipe: { coordenador: this.findOneId.equipe.coordenador, membros: this.findOneId.equipe.membros },
-      aplicabilidade: { contexto: this.findOneId.aplicabilidade.contexto }
-    })
-      .then(function () {
-        $('#edit').modal('close');
-        M.toast({ html: 'Projeto editado com sucesso!', classes: 'rounded' });
-      })
-      .catch(function (error) {
-        M.toast({ html: 'Não foi possivel editar o projeto.', classes: 'rounded' });
-      });
+    if (this.findOneId.imgUrl == (null || undefined)) {
+      if (this.selectedFiles == (null || undefined)) {
+        return docRef.update({
+          titulo: this.findOneId.titulo,
+          status: this.findOneId.status,
+          finalidade: this.findOneId.finalidade,
+          financiamento: this.findOneId.financiamento,
+          area: this.findOneId.area,
+          equipe: { coordenador: this.findOneId.equipe.coordenador, membros: this.findOneId.equipe.membros },
+          aplicabilidade: { contexto: this.findOneId.aplicabilidade.contexto }
+        })
+          .then(function () {
+            $('#edit').modal('close');
+            M.toast({ html: 'Projeto editado com sucesso!', classes: 'rounded' });
+            $.LoadingOverlay("hide");
+          })
+          .catch(function (error) {
+            M.toast({ html: 'Não foi possivel editar o projeto.', classes: 'rounded' });
+            $.LoadingOverlay("hide");
+          });
+      } else {
 
+        this.storage.upload('/imagens/projeto-' + this.findOneId.titulo, this.selectedFiles.item(0)).then(function (snapshot) {
+          snapshot.ref.getDownloadURL().then(downloadURL => {
+            url = downloadURL;
+          }).then(function () {
+            return docRef.update({
+              titulo: that.findOneId.titulo,
+              status: that.findOneId.status,
+              finalidade: that.findOneId.finalidade,
+              financiamento: that.findOneId.financiamento,
+              area: that.findOneId.area,
+              equipe: { coordenador: that.findOneId.equipe.coordenador, membros: that.findOneId.equipe.membros },
+              aplicabilidade: { contexto: that.findOneId.aplicabilidade.contexto },
+              imgUrl: url
+            })
+              .then(function () {
+                $('#edit').modal('close');
+                M.toast({ html: 'Projeto editado com sucesso!', classes: 'rounded' });
+                $.LoadingOverlay("hide");
+              })
+              .catch(function (error) {
+                M.toast({ html: 'Não foi possivel editar o projeto.', classes: 'rounded' });
+                $.LoadingOverlay("hide");
+              });
+          })
+        })
+      }
+    } else {
+      if (this.selectedFiles != (null || undefined)) {
+
+        // Delete the file
+        this.storage.ref('/imagens/').child('projeto-' + this.tituloAntigo).delete();
+        this.storage.upload('/imagens/projeto-' + this.findOneId.titulo, this.selectedFiles.item(0)).then(function (snapshot) {
+          snapshot.ref.getDownloadURL().then(downloadURL => {
+            url = downloadURL;
+          }).then(function () {
+            return docRef.update({
+              titulo: that.findOneId.titulo,
+              status: that.findOneId.status,
+              finalidade: that.findOneId.finalidade,
+              financiamento: that.findOneId.financiamento,
+              area: that.findOneId.area,
+              equipe: { coordenador: that.findOneId.equipe.coordenador, membros: that.findOneId.equipe.membros },
+              aplicabilidade: { contexto: that.findOneId.aplicabilidade.contexto },
+              imgUrl: url
+            })
+              .then(function () {
+                $('#edit').modal('close');
+                M.toast({ html: 'Projeto editado com sucesso!', classes: 'rounded' });
+                $.LoadingOverlay("hide");
+              })
+              .catch(function (error) {
+                M.toast({ html: 'Não foi possivel editar o projeto.', classes: 'rounded' });
+                $.LoadingOverlay("hide");
+              });
+          })
+        })
+
+      } else {
+        return docRef.update({
+          titulo: this.findOneId.titulo,
+          status: this.findOneId.status,
+          finalidade: this.findOneId.finalidade,
+          financiamento: this.findOneId.financiamento,
+          area: this.findOneId.area,
+          equipe: { coordenador: this.findOneId.equipe.coordenador, membros: this.findOneId.equipe.membros },
+          aplicabilidade: { contexto: this.findOneId.aplicabilidade.contexto },
+          imgUrl: this.findOneId.imgUrl
+        })
+          .then(function () {
+            $('#edit').modal('close');
+            M.toast({ html: 'Projeto editado com sucesso!', classes: 'rounded' });
+            $.LoadingOverlay("hide");
+          })
+          .catch(function (error) {
+            M.toast({ html: 'Não foi possivel editar o projeto.', classes: 'rounded' });
+            $.LoadingOverlay("hide");
+          });
+      }
+    }
   }
 
 }

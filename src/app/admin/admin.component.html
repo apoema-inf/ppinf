@@ -15,7 +15,7 @@
         href="#edit"><i class="material-icons">edit</i></a>
       <div class="collapsible-header">{{item.titulo}}</div>
       <div class="collapsible-body">
-        <img *ngIf="item.imgUrl" style="max-height:200px" src="{{item.imgUrl}}" alt="" class="responsive-img"> <!-- notice the "circle" class -->
+        <img *ngIf="item.imgUrl" style="max-height:200px" src="{{item.imgUrl}}" alt="" class="circle responsive-img">
         <p><b class="light-blue-text text-accent-4">Área:</b> {{item.area}}</p>
         <p><b class="light-blue-text text-accent-4">Status:</b> {{item.status}}</p>
         <p><b class="light-blue-text text-accent-4">Coordenador:</b> {{item.equipe.coordenador}}</p>
@@ -32,7 +32,7 @@
 <div id="create" class="modal modal-fixed-footer">
   <div class="modal-content">
     <h4>Criar Novo Projeto</h4>
-    <form (keyup.enter)="createProjeto(projeto)" class="col s12">
+    <form id="myForm" (keyup.enter)="createProjeto(projeto)" class="col s12">
       <div class="row">
         <div class="input-field col s12">
           <input [(ngModel)]="projeto.titulo" id="titulo" type="text" class="validate" name="titulo" required=""
@@ -42,7 +42,7 @@
       </div>
       <div class="row">
         <div class="input-field col s6">
-          <select [(ngModel)]="projeto.status" name="status">
+          <select id="status" [(ngModel)]="projeto.status" name="status">
             <option value="" disabled selected>Status do Projeto *</option>
             <option value="Em andamento">Em andamento</option>
             <option value="Concluído">Concluído</option>
@@ -187,6 +187,20 @@
           <label for="contexto" class="active">Contexto do Projeto *</label>
         </div>
       </div>
+      <div class="row">
+        <div class="col s12">
+          <img *ngIf="findOneId.imgUrl" style="max-height:100px" src="{{findOneId.imgUrl}}" alt="" class="circle responsive-img">
+          <div class="file-field input-field">
+            <div class="btn">
+              <span>Editar a imagem do projeto</span>
+              <input type="file" (change)="chooseFiles($event)">
+            </div>
+            <div class="file-path-wrapper">
+              <input class="file-path validate" type="text">
+            </div>
+          </div>
+        </div>
+      </div>
     </form>
   </div>
   <div class="modal-footer">
@@ -215,6 +229,6 @@
   <div class="modal-footer" align="center">
     Deseja realmente excluir este projeto?
     <a style="margin-left:40px; margin-right:40px" class="waves-effect waves-light btn red modal-close">Cancelar</a>
-    <a style="margin-right:20px" (click)="deletarProjeto(findOneId.id)" class="waves-effect waves-light btn green">Deletar</a>
+    <a style="margin-right:20px" (click)="deletarProjeto(findOneId.id, findOneId.titulo)" class="waves-effect waves-light btn green">Deletar</a>
   </div>
 </div>

@@ -27,10 +27,7 @@ export class LoginComponent {
     $.LoadingOverlay("show");
     this.authService.loginEmail(this.email, this.password)
       .then((res) => {
-        // Hide it after 3 seconds
-        setTimeout(function () {
-          $.LoadingOverlay("hide");
-        }, 500);
+        $.LoadingOverlay("hide");
         this.router.navigate(['/admin']);
         M.toast({ html: 'Usuário Autenticado!', classes: 'rounded' });
       }).catch((err) => {
