@@ -85,14 +85,14 @@
       </div>
       <div class="row">
         <div class="input-field col s12">
-          <textarea [(ngModel)]="projeto.membros" id="membros" class="materialize-textarea" name="membros" required=""
+          <textarea [(ngModel)]="projeto.membros" id="membros" class="materialize-textarea validate" name="membros" required=""
             aria-required="true"></textarea>
           <label for="membros">Membros do Projeto *</label>
         </div>
       </div>
       <div class="row">
         <div class="input-field col s12">
-          <textarea [(ngModel)]="projeto.contexto" id="contexto" class="materialize-textarea" name="contexto" required=""
+          <textarea [(ngModel)]="projeto.contexto" id="contexto" class="materialize-textarea validate" name="contexto" required=""
             aria-required="true"></textarea>
           <label for="contexto">Contexto do Projeto *</label>
         </div>
@@ -175,14 +175,14 @@
       </div>
       <div class="row">
         <div class="input-field col s12">
-          <textarea [(ngModel)]="findOneId.equipe.membros" id="membros" class="materialize-textarea" name="membros"
+          <textarea [(ngModel)]="findOneId.equipe.membros" id="membros" class="materialize-textarea validate" name="membros"
             required="" aria-required="true"></textarea>
           <label for="membros" class="active">Membros do Projeto *</label>
         </div>
       </div>
       <div class="row">
         <div class="input-field col s12">
-          <textarea [(ngModel)]="findOneId.aplicabilidade.contexto" id="contexto" class="materialize-textarea" name="contexto"
+          <textarea [(ngModel)]="findOneId.aplicabilidade.contexto" id="contexto" class="materialize-textarea validate" name="contexto"
             required="" aria-required="true"></textarea>
           <label for="contexto" class="active">Contexto do Projeto *</label>
         </div>
