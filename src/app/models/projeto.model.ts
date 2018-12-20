@@ -8,5 +8,7 @@ export class Projeto {
     coordenador: string;
     membros: string;
     contexto: string;
+    quesitos: string;
+    modalidade: string;
     img: any;
 }

@@ -22,7 +22,9 @@
         <p><b class="light-blue-text text-accent-4">Equipe:</b> {{item.equipe.membros}}</p>
         <p><b class="light-blue-text text-accent-4">Finalidade:</b> {{item.finalidade}}</p>
         <p><b class="light-blue-text text-accent-4">Aporte:</b> {{item.financiamento}}</p>
-        <p><b class="light-blue-text text-accent-4">Aplicabilidade:</b> {{item.aplicabilidade.contexto}}</p>
+        <p><b class="light-blue-text text-accent-4">Contexto:</b> {{item.aplicabilidade.contexto}}</p>
+        <p><b class="light-blue-text text-accent-4">Quesitos Básicos:</b> {{item.aplicabilidade.quesitos}}</p>
+        <p><b class="light-blue-text text-accent-4">Modalidade:</b> {{item.aplicabilidade.modalidade}}</p>
       </div>
     </li>
   </ul>
@@ -95,6 +97,20 @@
           <textarea [(ngModel)]="projeto.contexto" id="contexto" class="materialize-textarea validate" name="contexto"
             required="" aria-required="true"></textarea>
           <label for="contexto">Contexto do Projeto *</label>
+        </div>
+        <div class="input-field col s12">
+          <textarea [(ngModel)]="projeto.quesitos" id="quesitos" class="materialize-textarea validate" name="quesitos"
+            required="" aria-required="true"></textarea>
+          <label for="quesitos">Quesitos Básicos do Projeto *</label>
+        </div>
+        <div class="input-field col s6">
+          <select [(ngModel)]="projeto.modalidade" name="modalidade" multiple>
+            <option value="" disabled selected>Modalidade do Projeto *</option>
+            <option value="Convênio">Convênio</option>
+            <option value="Contrato">Contrato</option>
+            <option value="Cooperação Técnica">Cooperação Técnica</option>
+            <option value="TED">TED</option>
+          </select>
         </div>
       </div>
       <div class="row">
@@ -186,6 +202,20 @@
             name="contexto" required="" aria-required="true"></textarea>
           <label for="contexto" class="active">Contexto do Projeto *</label>
         </div>
+        <div class="input-field col s12">
+          <textarea [(ngModel)]="findOneId.aplicabilidade.quesitos" id="quesitos" class="materialize-textarea validate"
+            name="quesitos" required="" aria-required="true"></textarea>
+          <label for="quesitos" class="active">Quesitos Básicos do Projeto *</label>
+        </div>
+        <div class="input-field col s6">
+          <select [(ngModel)]="findOneId.aplicabilidade.modalidade" name="modalidade" multiple>
+            <option value="Convênio">Convênio</option>
+            <option value="Contrato">Contrato</option>
+            <option value="Cooperação Técnica">Cooperação Técnica</option>
+            <option value="TED">TED</option>
+          </select>
+          <label>Modalidade do Projeto *</label>
+        </div>
       </div>
       <div *ngIf="findOneId.imgUrl" class="row">
         <div class="col s12">
@@ -193,7 +223,7 @@
           <p>
             <label>
               <input name="check" [(ngModel)]="check" type="checkbox" class="filled-in" />
-              <span >Deixar o projeto sem qualquer imagem</span>
+              <span>Deixar o projeto sem qualquer imagem</span>
             </label>
           </p>
         </div>
@@ -232,7 +262,9 @@
       <p><b class="light-blue-text text-accent-4">Equipe:</b> {{findOneId.equipe.membros}}</p>
       <p><b class="light-blue-text text-accent-4">Finalidade:</b> {{findOneId.finalidade}}</p>
       <p><b class="light-blue-text text-accent-4">Aporte:</b> {{findOneId.financiamento}}</p>
-      <p><b class="light-blue-text text-accent-4">Aplicabilidade:</b> {{findOneId.aplicabilidade.contexto}}</p>
+      <p><b class="light-blue-text text-accent-4">Contexto:</b> {{findOneId.aplicabilidade.contexto}}</p>
+      <p><b class="light-blue-text text-accent-4">Quesitos Básicos:</b> {{findOneId.aplicabilidade.quesitos}}</p>
+      <p><b class="light-blue-text text-accent-4">Modalidade:</b> {{findOneId.aplicabilidade.modalidade}}</p>
     </div>
 
   </div>

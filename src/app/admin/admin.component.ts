@@ -100,6 +100,8 @@ export class AdminComponent implements OnInit {
       this.projeto.status == (null || '' || undefined) ||
       this.projeto.coordenador == (null || '' || undefined) ||
       this.projeto.finalidade == (null || '' || undefined) ||
+      this.projeto.quesitos == (null || '' || undefined) ||
+      this.projeto.modalidade == (null || '' || undefined) ||
       this.projeto.membros == (null || '' || undefined)) {
       M.toast({ html: 'Preencha todos os campos obrigatório.', classes: 'rounded' });
       return;
@@ -120,7 +122,7 @@ export class AdminComponent implements OnInit {
         financiamento: this.projeto.financiamento,
         area: this.projeto.area,
         equipe: { coordenador: this.projeto.coordenador, membros: this.projeto.membros },
-        aplicabilidade: { contexto: this.projeto.contexto }
+        aplicabilidade: { contexto: this.projeto.contexto, quesitos: this.projeto.quesitos, modalidade: this.projeto.modalidade },
       })
         .then(function (docRef) {
           $('#create').modal('close');
@@ -147,7 +149,7 @@ export class AdminComponent implements OnInit {
       financiamento: this.projeto.financiamento,
       area: this.projeto.area,
       equipe: { coordenador: this.projeto.coordenador, membros: this.projeto.membros },
-      aplicabilidade: { contexto: this.projeto.contexto },
+      aplicabilidade: { contexto: this.projeto.contexto, quesitos: this.projeto.quesitos, modalidade: this.projeto.modalidade },
       imgUrl: this.projeto.img
     })
       .then(function (docRef) {
@@ -211,7 +213,9 @@ export class AdminComponent implements OnInit {
         financiamento: this.findOneId.financiamento,
         area: this.findOneId.area,
         equipe: { coordenador: this.findOneId.equipe.coordenador, membros: this.findOneId.equipe.membros },
-        aplicabilidade: { contexto: this.findOneId.aplicabilidade.contexto },
+        aplicabilidade: { contexto: this.findOneId.aplicabilidade.contexto,
+        quesitos: this.findOneId.aplicabilidade.quesitos,
+        modalidade: this.findOneId.aplicabilidade.modalidade },
         imgUrl: firebase.firestore.FieldValue.delete()
       })
         .then(function () {
@@ -233,8 +237,9 @@ export class AdminComponent implements OnInit {
             financiamento: this.findOneId.financiamento,
             area: this.findOneId.area,
             equipe: { coordenador: this.findOneId.equipe.coordenador, membros: this.findOneId.equipe.membros },
-            aplicabilidade: { contexto: this.findOneId.aplicabilidade.contexto }
-          })
+            aplicabilidade: { contexto: this.findOneId.aplicabilidade.contexto,
+              quesitos: this.findOneId.aplicabilidade.quesitos,
+              modalidade: this.findOneId.aplicabilidade.modalidade },          })
             .then(function () {
               $('#edit').modal('close');
               M.toast({ html: 'Projeto editado com sucesso!', classes: 'rounded' });
@@ -257,7 +262,9 @@ export class AdminComponent implements OnInit {
                 financiamento: that.findOneId.financiamento,
                 area: that.findOneId.area,
                 equipe: { coordenador: that.findOneId.equipe.coordenador, membros: that.findOneId.equipe.membros },
-                aplicabilidade: { contexto: that.findOneId.aplicabilidade.contexto },
+                aplicabilidade: { contexto: this.findOneId.aplicabilidade.contexto,
+                  quesitos: this.findOneId.aplicabilidade.quesitos,
+                  modalidade: this.findOneId.aplicabilidade.modalidade },
                 imgUrl: url
               })
                 .then(function () {
@@ -288,7 +295,9 @@ export class AdminComponent implements OnInit {
                 financiamento: that.findOneId.financiamento,
                 area: that.findOneId.area,
                 equipe: { coordenador: that.findOneId.equipe.coordenador, membros: that.findOneId.equipe.membros },
-                aplicabilidade: { contexto: that.findOneId.aplicabilidade.contexto },
+                aplicabilidade: { contexto: this.findOneId.aplicabilidade.contexto,
+                  quesitos: this.findOneId.aplicabilidade.quesitos,
+                  modalidade: this.findOneId.aplicabilidade.modalidade },
                 imgUrl: url
               })
                 .then(function () {
@@ -311,7 +320,9 @@ export class AdminComponent implements OnInit {
             financiamento: this.findOneId.financiamento,
             area: this.findOneId.area,
             equipe: { coordenador: this.findOneId.equipe.coordenador, membros: this.findOneId.equipe.membros },
-            aplicabilidade: { contexto: this.findOneId.aplicabilidade.contexto },
+            aplicabilidade: { contexto: this.findOneId.aplicabilidade.contexto,
+              quesitos: this.findOneId.aplicabilidade.quesitos,
+              modalidade: this.findOneId.aplicabilidade.modalidade },
             imgUrl: this.findOneId.imgUrl
           })
             .then(function () {
