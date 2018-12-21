@@ -14,17 +14,30 @@
       <a (click)="findOne(item.id, 'edit')" class="buttons-projetos btn-floating btn-small waves-effect waves-light blue right modal-trigger"
         href="#edit"><i class="material-icons">edit</i></a>
       <div class="collapsible-header">{{item.titulo}}</div>
-      <div class="collapsible-body">
-        <img *ngIf="item.imgUrl" style="max-height:200px" src="{{item.imgUrl}}" alt="" class="center circle responsive-img">
-        <p><b class="light-blue-text text-accent-4">Área:</b> {{item.area}}</p>
-        <p><b class="light-blue-text text-accent-4">Status:</b> {{item.status}}</p>
-        <p><b class="light-blue-text text-accent-4">Coordenador:</b> {{item.equipe.coordenador}}</p>
-        <p><b class="light-blue-text text-accent-4">Equipe:</b> {{item.equipe.membros}}</p>
-        <p><b class="light-blue-text text-accent-4">Finalidade:</b> {{item.finalidade}}</p>
-        <p><b class="light-blue-text text-accent-4">Aporte:</b> {{item.financiamento}}</p>
-        <p><b class="light-blue-text text-accent-4">Contexto:</b> {{item.aplicabilidade.contexto}}</p>
-        <p><b class="light-blue-text text-accent-4">Quesitos Básicos:</b> {{item.aplicabilidade.quesitos}}</p>
-        <p><b class="light-blue-text text-accent-4">Modalidade:</b> {{item.aplicabilidade.modalidade}}</p>
+      <div class="grey lighten-4 collapsible-body">
+        <div class="card">
+          <div class="card-content gray-text">
+            <span align="center" class="card-title">Categorização do Projeto</span>
+            <div class="divider"></div>
+            <img *ngIf="item.imgUrl" style="max-height:200px" src="{{item.imgUrl}}" alt="" class="center circle responsive-img">
+            <!-- notice the "circle" class -->
+            <p><b class="light-blue-text text-accent-4">Área:</b> {{item.area}}</p>
+            <p><b class="light-blue-text text-accent-4">Status:</b> {{item.status}}</p>
+            <p><b class="light-blue-text text-accent-4">Coordenador:</b> {{item.equipe.coordenador}}</p>
+            <p><b class="light-blue-text text-accent-4">Equipe:</b> {{item.equipe.membros}}</p>
+            <p><b class="light-blue-text text-accent-4">Finalidade:</b> {{item.finalidade}}</p>
+            <p><b class="light-blue-text text-accent-4">Financiamento:</b> {{item.financiamento}}</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-content gray-text">
+            <span align="center" class="card-title">Aplicabilidade do Projeto</span>
+            <div class="divider"></div>
+            <p><b class="light-blue-text text-accent-4">Contexto:</b> {{item.aplicabilidade.contexto}}</p>
+            <p><b class="light-blue-text text-accent-4">Quesitos Básicos:</b> {{item.aplicabilidade.quesitos}}</p>
+            <p><b class="light-blue-text text-accent-4">Modalidade:</b> {{item.aplicabilidade.modalidade}}</p>
+          </div>
+        </div>
       </div>
     </li>
   </ul>
