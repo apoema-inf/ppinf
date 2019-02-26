@@ -1,51 +1,67 @@
 <div class="slider">
   <ul class="slides">
     <li>
-      <img style="filter:brightness(50%)" src="http://adapsat.com.br/wp-content/uploads/2016/11/a-importancia-do-pensamento-estrategico-em-tecnologia-da-informacao.jpg">
+      <img style="filter:brightness(50%)"
+        src="http://adapsat.com.br/wp-content/uploads/2016/11/a-importancia-do-pensamento-estrategico-em-tecnologia-da-informacao.jpg">
       <!-- random image -->
       <div class="caption center-align">
         <h3>Apoema</h3>
         <h5 class="light grey-text text-lighten-3">Tecnologia e Inovação.</h5>
-        <a href="http://apoema.inf.ufg.br" target="_blank" class="btn waves-effect white grey-text darken-text-2">Ver</a>
+        <a href="http://apoema.inf.ufg.br" target="_blank"
+          class="btn waves-effect white grey-text darken-text-2">Ver</a>
       </div>
     </li>
     <li>
-      <img style="filter:brightness(70%)" src="http://portalideias.com.br/web-files/uploads/post/c975ae4485a937f5fe52570b2dc87a72.png">
+      <img style="filter:brightness(70%)"
+        src="http://portalideias.com.br/web-files/uploads/post/c975ae4485a937f5fe52570b2dc87a72.png">
       <!-- random image -->
       <div class="caption left-align">
         <h3>Projeto</h3>
         <h5 class="light grey-text text-lighten-3">Ajuda para seus projetos.</h5>
-        <a href="http://apoema.inf.ufg.br/servicosinterno.php" target="_blank" class="btn waves-effect white grey-text darken-text-2">Ver</a>
+        <a href="http://apoema.inf.ufg.br/servicosinterno.php" target="_blank"
+          class="btn waves-effect white grey-text darken-text-2">Ver</a>
       </div>
     </li>
     <li>
-      <img style="filter:brightness(70%)" src="http://fluxoconsultoria.poli.ufrj.br/wp-content/uploads/2016/07/imagem_empresa_jr.png">
+      <img style="filter:brightness(70%)"
+        src="https://fast-notas-blog.s3.amazonaws.com/wp-content/uploads/2017/05/como-abrir-uma-empresa.jpg">
       <!-- random image -->
       <div class="caption right-align">
         <h3>Empresa</h3>
         <h5 class="light grey-text text-lighten-3">Ajuda para a sua empresa.</h5>
-        <a href="http://apoema.inf.ufg.br/servicosempresa.php" target="_blank" class="btn waves-effect white grey-text darken-text-2">Ver</a>
+        <a href="http://apoema.inf.ufg.br/servicosempresa.php" target="_blank"
+          class="btn waves-effect white grey-text darken-text-2">Ver</a>
       </div>
     </li>
   </ul>
 </div>
 <br>
+
 <div class="div-btns">
-  <a (click)="filterArea('')" class="waves-effect waves-light btn orange darken-4"><i class="material-icons left">all_inclusive</i>Todos</a>
-  <a (click)="filterArea('Agronegócio')" class="waves-effect waves-light btn orange darken-4"><i class="material-icons left">nature_people</i>Agronegócio</a>
-  <a (click)="filterArea('Educação')" class="waves-effect waves-light btn orange darken-4"><i class="material-icons left">school</i>Educação</a>
-  <a (click)="filterArea('Engenharia')" class="waves-effect waves-light btn orange darken-4"><i class="material-icons left">build</i>Engenharia</a>
-  <a (click)="filterArea('Informática')" class="waves-effect waves-light btn orange darken-4"><i class="material-icons left">http</i>Informática</a>
-  <a (click)="filterArea('Logística')" class="waves-effect waves-light btn orange darken-4"><i class="material-icons left">autorenew</i>Logística</a>
-  <a (click)="filterArea('Meio Ambiente')" class="waves-effect waves-light btn orange darken-4"><i class="material-icons left">brightness_5</i>Meio
+  <a (click)="filterArea('')" class="waves-effect waves-light btn orange darken-4"><i
+      class="material-icons left">all_inclusive</i>Todos</a>
+  <a (click)="filterArea('Agronegócio')" class="waves-effect waves-light btn orange darken-4"><i
+      class="material-icons left">nature_people</i>Agronegócio</a>
+  <a (click)="filterArea('Educação')" class="waves-effect waves-light btn orange darken-4"><i
+      class="material-icons left">school</i>Educação</a>
+  <a (click)="filterArea('Engenharia')" class="waves-effect waves-light btn orange darken-4"><i
+      class="material-icons left">build</i>Engenharia</a>
+  <a (click)="filterArea('Informática')" class="waves-effect waves-light btn orange darken-4"><i
+      class="material-icons left">http</i>Informática</a>
+  <a (click)="filterArea('Logística')" class="waves-effect waves-light btn orange darken-4"><i
+      class="material-icons left">autorenew</i>Logística</a>
+  <a (click)="filterArea('Meio Ambiente')" class="waves-effect waves-light btn orange darken-4"><i
+      class="material-icons left">brightness_5</i>Meio
     Ambiente</a>
-  <a (click)="filterArea('Saúde')" class="waves-effect waves-light btn orange darken-4"><i class="material-icons left">favorite</i>Saúde</a>
-  <a (click)="filterArea('Outros')" class="waves-effect waves-light btn orange darken-4"><i class="material-icons left">dehaze</i>Outros</a>
+  <a (click)="filterArea('Saúde')" class="waves-effect waves-light btn orange darken-4"><i
+      class="material-icons left">favorite</i>Saúde</a>
+  <a (click)="filterArea('Outros')" class="waves-effect waves-light btn orange darken-4"><i
+      class="material-icons left">dehaze</i>Outros</a>
 </div>
 <br>
 <div class="container">
   <div class="row">
-    <div class="input-field col s4">
+    <div class="input-field col s12 m4">
       <select [(ngModel)]="status">
         <option value="" disabled selected>Escolha a sua opção</option>
         <option value="">Todos</option>
@@ -55,7 +71,7 @@
       </select>
       <label>Status</label>
     </div>
-    <div class="input-field col s4">
+    <div class="input-field col s12 m4">
       <select [(ngModel)]="finalidade">
         <option value="" disabled selected>Escolha a sua opção</option>
         <option value="">Todos</option>
@@ -66,7 +82,7 @@
       </select>
       <label>Finalidade</label>
     </div>
-    <form class="col s4">
+    <form class="col s12 m4">
       <div class="row">
         <div class="input-field col s12">
           <i class="material-icons prefix">search</i>
@@ -84,14 +100,16 @@
     <div class="divider cyan darken-2"></div>
     <br>
     <ul class="collapsible popout">
-      <li *ngFor="let item of projetos | async | filterBy: ['status']: status | filterBy: ['area']: area | filterBy: ['titulo', 'equipe.membros', 'equipe.coordenador', 'financiamento']: titulo | filterBy: ['finalidade']: finalidade">
+      <li
+        *ngFor="let item of projetos | async | filterBy: ['status']: status | filterBy: ['area']: area | filterBy: ['titulo', 'equipe.membros', 'equipe.coordenador', 'financiamento']: titulo | filterBy: ['finalidade']: finalidade">
         <div class="collapsible-header">{{item.titulo}}</div>
         <div class="grey lighten-4 collapsible-body">
           <div class="card">
             <div class="card-content gray-text">
               <span align="center" class="card-title">Categorização do Projeto</span>
               <div class="divider"></div>
-              <img *ngIf="item.imgUrl" style="max-height:200px" src="{{item.imgUrl}}" alt="" class="center circle responsive-img">
+              <img *ngIf="item.imgUrl" style="max-height:200px" src="{{item.imgUrl}}" alt=""
+                class="center circle responsive-img">
               <!-- notice the "circle" class -->
               <p><b class="light-blue-text text-accent-4">Área:</b> {{item.area}}</p>
               <p><b class="light-blue-text text-accent-4">Status:</b> {{item.status}}</p>
