@@ -103,12 +103,12 @@
     <br>
     <ul class="collapsible popout">
       <li
-        *ngFor="let item of projetos | async | filterBy: ['status']: status | filterBy: ['area']: area | filterBy: ['titulo', 'equipe.membros', 'equipe.coordenador', 'financiamento']: titulo | filterBy: ['finalidade']: finalidade">
+        *ngFor="let item of projetos | async | filterBy: ['categorizacao.status']: status | filterBy: ['categorizacao.area']: area | filterBy: ['descricao', 'titulo', 'categorizacao.membros', 'categorizacao.coordenador.nome', 'categorizacao.financiamento']: titulo | filterBy: ['categorizacao.finalidade']: finalidade">
         <div class="collapsible-header">{{item.titulo}}</div>
         <div class="grey lighten-4 collapsible-body">
           <div class="card">
             <div class="card-content gray-text">
-              <img *ngIf="item.imgUrl" style="max-height:200px" src="{{item.imgUrl}}" alt=""
+              <img *ngIf="item.img" style="max-height:200px" src="{{item.img}}" alt=""
                 class="center circle responsive-img">
               <p><b class="light-blue-text text-accent-4">Descrição:</b> {{item.descricao}}</p>
               <p><b class="light-blue-text text-accent-4">URL do Projeto: </b><a target="_blank"
@@ -119,20 +119,20 @@
             <div class="card-content gray-text">
               <span align="center" class="card-title">Categorização do Projeto</span>
               <div class="divider"></div>
-              <p><b class="light-blue-text text-accent-4">Área:</b> {{item.area}}</p>
-              <p><b class="light-blue-text text-accent-4">Status:</b> {{item.status}}</p>
-              <p><b class="light-blue-text text-accent-4">Coordenador:</b> {{item.equipe.coordenador.nome}}</p>
-              <p><b class="light-blue-text text-accent-4">Contato Coordenador:</b> {{item.equipe.coordenador.telefone}}
-                - {{item.equipe.coordenador.email}}</p>
-              <div></div>
+              <p><b class="light-blue-text text-accent-4">Área:</b> {{item.categorizacao?.area}}</p>
+              <p><b class="light-blue-text text-accent-4">Status:</b> {{item.categorizacao?.status}}</p>
+              <p><b class="light-blue-text text-accent-4">Coordenador:</b> {{item.categorizacao?.coordenador.nome}}</p>
+              <p><b class="light-blue-text text-accent-4">Contato Coordenador:</b>
+                {{item.categorizacao?.coordenador.telefone}}
+                - {{item.categorizacao?.coordenador.email}}</p>
               <ul class="collection">
                 <li class="collection-header light-blue-text text-accent-4">
                   <p><b>Equipe:</b></p>
                 </li>
-                <li class="collection-item" *ngFor="let membro of item.equipe.membros">{{membro}}</li>
+                <li class="collection-item" *ngFor="let membro of item.membros">{{membro}}</li>
               </ul>
-              <p><b class="light-blue-text text-accent-4">Finalidade:</b> {{item.finalidade}}</p>
-              <p><b class="light-blue-text text-accent-4">Financiamento:</b> {{item.financiamento}}</p>
+              <p><b class="light-blue-text text-accent-4">Finalidade:</b> {{item.categorizacao?.finalidade}}</p>
+              <p><b class="light-blue-text text-accent-4">Financiamento:</b> {{item.categorizacao?.financiamento}}</p>
             </div>
           </div>
           <div class="card">
@@ -143,15 +143,15 @@
                 <li class="collection-header light-blue-text text-accent-4">
                   <p><b>Contexto Corporativo:</b></p>
                 </li>
-                <li class="collection-item" *ngFor="let contexto of item.aplicabilidade.contexto">{{contexto}}</li>
+                <li class="collection-item" *ngFor="let contexto of item.contexto?.contexto">{{contexto}}</li>
               </ul>
-              <p><b class="light-blue-text text-accent-4">Métodos e Ferramentas:</b> {{item.aplicabilidade.quesitos}}
+              <p><b class="light-blue-text text-accent-4">Métodos e Ferramentas:</b> {{item.contexto?.quesitos}}
               </p>
               <ul class="collection">
                 <li class="collection-header light-blue-text text-accent-4">
                   <p><b>Contratação:</b></p>
                 </li>
-                <li class="collection-item" *ngFor="let contrato of item.aplicabilidade.modalidade">{{contrato}}</li>
+                <li class="collection-item" *ngFor="let contrato of item.contexto?.contratacao">{{contrato}}</li>
               </ul>
             </div>
           </div>

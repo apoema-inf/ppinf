@@ -1,14 +1,22 @@
 export class Projeto {
     id: string;
+    url: string;
     titulo: string;
-    status: string;
-    finalidade: string;
-    financiamento: string;
-    area: string;
-    coordenador: {nome: string, telefone: string, email: string};
-    membros: string;
-    contexto: string;
-    quesitos: string;
-    modalidade: string;
     img: any;
+    descricao: string;
+    categorizacao: {
+        area: string;
+        status: string;
+        coordenador: {
+            nome: string, telefone: string, email: string
+        };
+        finalidade: string;
+        financiamento: string;
+        membros: any;
+    }
+    contexto: {
+        contexto: any;
+        quesitos: string;
+        contratacao: any;
+    }
 }

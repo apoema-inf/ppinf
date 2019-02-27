@@ -21,23 +21,14 @@ export class AdminComponent implements OnInit {
   check = false;
   selectedFiles: FileList;
   file: File;
-  findOneId: any = {
-    id: '',
-    titulo: '',
-    status: '',
-    finalidade: '',
-    financiamento: '',
-    area: '',
-    equipe: { coordenador: { nome: '', telefone: '', email: '' }, membros: '' },
-    aplicabilidade: { contexto: '' }
-  };
+  findOneId: Projeto = new Projeto();
   projetos: Observable<Projeto[]>;
   projeto: Projeto = new Projeto();
   //Guarda título antigo p/ excluir file ao editar projeto
   tituloAntigo: any;
 
   constructor(private db: AngularFirestore, private storage: AngularFireStorage) {
-    this.projeto.coordenador = { nome: '', email: '', telefone: '' };
+    this.initProjeto();
     this.projetos = db.collection('projetos').snapshotChanges().pipe(map(
 
       changes => {
@@ -54,6 +45,47 @@ export class AdminComponent implements OnInit {
 
           });
       }));
+  }
+
+  private initProjeto() {
+    this.projeto.url = '';
+    this.projeto.titulo = '';
+    this.projeto.descricao = '';
+    this.projeto.categorizacao = {
+      area: '',
+      status: '',
+      coordenador: {
+        nome: '', telefone: '', email: ''
+      },
+      finalidade: '',
+      financiamento: 'Auto-Financiado',
+      membros: [],
+    }
+    this.projeto.contexto = {
+      contexto: [],
+      quesitos: '',
+      contratacao: [],
+    }
+
+    //findOneID init
+    this.findOneId.url = '';
+    this.findOneId.titulo = '';
+    this.findOneId.descricao = '';
+    this.findOneId.categorizacao = {
+      area: '',
+      status: '',
+      coordenador: {
+        nome: '', telefone: '', email: ''
+      },
+      finalidade: '',
+      financiamento: 'Auto-Financiado',
+      membros: [],
+    }
+    this.findOneId.contexto = {
+      contexto: [],
+      quesitos: '',
+      contratacao: [],
+    }
   }
 
   ngOnInit() {
@@ -95,11 +127,7 @@ export class AdminComponent implements OnInit {
 
   //Criar projeto sem img
   createProjeto() {
-    if (this.projeto.financiamento == (undefined || null || ''))
-      this.projeto.financiamento = 'Auto-Financiado'
-    var splitMembros = this.projeto.membros.split(',');
-    var splitContratacao = this.projeto.modalidade.split(',');
-    var splitContexto = this.projeto.contexto.split(',');
+    this.splitArrays();
 
     // Show full page LoadingOverlay
     $.LoadingOverlay("show");
@@ -107,12 +135,10 @@ export class AdminComponent implements OnInit {
     if (this.selectedFiles == (null || undefined)) {
       this.db.collection("projetos").add({
         titulo: this.projeto.titulo,
-        status: this.projeto.status,
-        finalidade: this.projeto.finalidade,
-        financiamento: this.projeto.financiamento,
-        area: this.projeto.area,
-        equipe: { coordenador: this.projeto.coordenador, membros: splitMembros },
-        aplicabilidade: { contexto: splitContexto, quesitos: this.projeto.quesitos, modalidade: splitContratacao },
+        url: this.projeto.url,
+        descricao: this.projeto.descricao,
+        categorizacao: this.projeto.categorizacao,
+        contexto: this.projeto.contexto,
       })
         .then(function (docRef) {
           $('#create').modal('close');
@@ -130,21 +156,38 @@ export class AdminComponent implements OnInit {
 
   }
 
+  private splitArrays() {
+    if (this.projeto.categorizacao.membros && this.projeto.categorizacao.membros.length > 0) {
+      this.projeto.categorizacao.membros = this.projeto.categorizacao.membros.split(',');
+    }
+    else {
+      this.projeto.categorizacao.membros = '';
+    }
+    if (this.projeto.contexto.contratacao && this.projeto.contexto.contratacao.length > 0) {
+      this.projeto.contexto.contratacao = this.projeto.contexto.contratacao.split(',');
+    }
+    else {
+      this.projeto.contexto.contratacao = '';
+    }
+    if (this.projeto.contexto.contexto && this.projeto.contexto.contexto.length > 0) {
+      this.projeto.contexto.contexto = this.projeto.contexto.contexto.split(',');
+    }
+    else {
+      this.projeto.contexto.contexto = '';
+    }
+  }
+
   //Criar projeto com img
   createProjetoImg() {
-    var splitMembros = this.projeto.membros.split(',');
-    var splitContratacao = this.projeto.modalidade.split(',');
-    var splitContexto = this.projeto.contexto.split(',');
+    this.splitArrays();
 
     this.db.collection("projetos").add({
       titulo: this.projeto.titulo,
-      status: this.projeto.status,
-      finalidade: this.projeto.finalidade,
-      financiamento: this.projeto.financiamento,
-      area: this.projeto.area,
-      equipe: { coordenador: this.projeto.coordenador, membros: splitMembros },
-      aplicabilidade: { contexto: splitContexto, quesitos: this.projeto.quesitos, modalidade: splitContratacao },
-      imgUrl: this.projeto.img
+      url: this.projeto.url,
+      descricao: this.projeto.descricao,
+      categorizacao: this.projeto.categorizacao,
+      contexto: this.projeto.contexto,
+      img: this.projeto.img
     })
       .then(function (docRef) {
         $('#create').modal('close');
@@ -159,18 +202,18 @@ export class AdminComponent implements OnInit {
 
   }
 
-  findOne(string, quem) {
-    $("#" + quem).LoadingOverlay("show");
+  findOne(string, janela) {
+    $("#" + janela).LoadingOverlay("show");
     var docRef = this.db.collection("projetos").doc(string);
 
     docRef.ref.
       get().then(documentSnapshot => {
         if (documentSnapshot.exists) {
-          this.findOneId = documentSnapshot.data();
+          this.findOneId = documentSnapshot.data() as Projeto;
+          console.log(this.findOneId);
           this.tituloAntigo = documentSnapshot.data().titulo;
           this.findOneId.id = documentSnapshot.id;
-          console.log("Document data:", documentSnapshot.data());
-          $("#" + quem).LoadingOverlay("hide", true);
+          $("#" + janela).LoadingOverlay("hide", true);
         } else {
           // doc.data() will be undefined in this case
           console.log("No such document!");
@@ -186,15 +229,11 @@ export class AdminComponent implements OnInit {
       // Delete the file
       that.storage.ref('/imagens/').child('projeto-' + titulo).delete();
     }).catch(function (error) {
-      console.log(error);
       M.toast({ html: 'Não foi possivel remover o projeto.', classes: 'rounded' });
     });
   }
 
   editarProjeto(string) {
-    var splitMembros = this.projeto.membros.split(',');
-    var splitContratacao = this.projeto.modalidade.split(',');
-    var splitContexto = this.projeto.contexto.split(',');
 
     $.LoadingOverlay("show");
     var url;
@@ -206,17 +245,11 @@ export class AdminComponent implements OnInit {
       this.storage.ref('/imagens/').child('projeto-' + this.tituloAntigo).delete();
       return docRef.update({
         titulo: this.findOneId.titulo,
-        status: this.findOneId.status,
-        finalidade: this.findOneId.finalidade,
-        financiamento: this.findOneId.financiamento,
-        area: this.findOneId.area,
-        equipe: { coordenador: this.projeto.coordenador, membros: splitMembros },
-        aplicabilidade: {
-          contexto: splitContexto,
-          quesitos: this.findOneId.aplicabilidade.quesitos,
-          modalidade: splitContratacao
-        },
-        imgUrl: firebase.firestore.FieldValue.delete()
+        url: this.findOneId.url,
+        descricao: this.findOneId.descricao,
+        categorizacao: this.findOneId.categorizacao,
+        contexto: this.findOneId.contexto,
+        img: firebase.firestore.FieldValue.delete()
       })
         .then(function () {
           $('#edit').modal('close');
@@ -228,20 +261,14 @@ export class AdminComponent implements OnInit {
           $.LoadingOverlay("hide");
         });
     } else {
-      if (this.findOneId.imgUrl == (null || undefined)) {
+      if (this.findOneId.img == (null || undefined)) {
         if (this.selectedFiles == (null || undefined)) {
           return docRef.update({
             titulo: this.findOneId.titulo,
-            status: this.findOneId.status,
-            finalidade: this.findOneId.finalidade,
-            financiamento: this.findOneId.financiamento,
-            area: this.findOneId.area,
-            equipe: { coordenador: this.projeto.coordenador, membros: splitMembros },
-            aplicabilidade: {
-              contexto: splitContexto,
-              quesitos: this.findOneId.aplicabilidade.quesitos,
-              modalidade: splitContratacao
-            },
+            url: this.findOneId.url,
+            descricao: this.findOneId.descricao,
+            categorizacao: this.findOneId.categorizacao,
+            contexto: this.findOneId.contexto,
           })
             .then(function () {
               $('#edit').modal('close');
@@ -260,17 +287,11 @@ export class AdminComponent implements OnInit {
             }).then(function () {
               return docRef.update({
                 titulo: that.findOneId.titulo,
-                status: that.findOneId.status,
-                finalidade: that.findOneId.finalidade,
-                financiamento: that.findOneId.financiamento,
-                area: that.findOneId.area,
-                equipe: { coordenador: this.projeto.coordenador, membros: splitMembros },
-                aplicabilidade: {
-                  contexto: splitContexto,
-                  quesitos: this.findOneId.aplicabilidade.quesitos,
-                  modalidade: splitContratacao
-                },
-                imgUrl: url
+                url: that.findOneId.url,
+                descricao: that.findOneId.descricao,
+                categorizacao: that.findOneId.categorizacao,
+                contexto: that.findOneId.contexto,
+                img: url
               })
                 .then(function () {
                   $('#edit').modal('close');
@@ -295,17 +316,11 @@ export class AdminComponent implements OnInit {
             }).then(function () {
               return docRef.update({
                 titulo: that.findOneId.titulo,
-                status: that.findOneId.status,
-                finalidade: that.findOneId.finalidade,
-                financiamento: that.findOneId.financiamento,
-                area: that.findOneId.area,
-                equipe: { coordenador: this.projeto.coordenador, membros: splitMembros },
-                aplicabilidade: {
-                  contexto: splitContexto,
-                  quesitos: this.findOneId.aplicabilidade.quesitos,
-                  modalidade: splitContratacao
-                },
-                imgUrl: url
+                url: that.findOneId.url,
+                descricao: that.findOneId.descricao,
+                categorizacao: that.findOneId.categorizacao,
+                contexto: that.findOneId.contexto,
+                img: url
               })
                 .then(function () {
                   $('#edit').modal('close');
@@ -322,17 +337,11 @@ export class AdminComponent implements OnInit {
         } else {
           return docRef.update({
             titulo: this.findOneId.titulo,
-            status: this.findOneId.status,
-            finalidade: this.findOneId.finalidade,
-            financiamento: this.findOneId.financiamento,
-            area: this.findOneId.area,
-            equipe: { coordenador: this.projeto.coordenador, membros: splitMembros },
-            aplicabilidade: {
-              contexto: splitContexto,
-              quesitos: this.findOneId.aplicabilidade.quesitos,
-              modalidade: splitContratacao
-            },
-            imgUrl: this.findOneId.imgUrl
+            url: this.findOneId.url,
+            descricao: this.findOneId.descricao,
+            categorizacao: this.findOneId.categorizacao,
+            contexto: this.findOneId.contexto,
+            img: this.findOneId.img
           })
             .then(function () {
               $('#edit').modal('close');
@@ -345,8 +354,6 @@ export class AdminComponent implements OnInit {
             });
         }
       }
-
     }
   }
-
 }
