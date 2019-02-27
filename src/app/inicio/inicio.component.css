@@ -2,3 +2,7 @@
     display: flex;
     justify-content: space-around;
 }
+
+.div-btns a{
+    font-size: .7em;
+}

@@ -5,7 +5,7 @@ export class Projeto {
     finalidade: string;
     financiamento: string;
     area: string;
-    coordenador: string;
+    coordenador: {nome: string, telefone: string, email: string};
     membros: string;
     contexto: string;
     quesitos: string;

@@ -55,6 +55,8 @@
     Ambiente</a>
   <a (click)="filterArea('Saúde')" class="waves-effect waves-light btn orange darken-4"><i
       class="material-icons left">favorite</i>Saúde</a>
+  <a (click)="filterArea('Corporativo')" class="waves-effect waves-light btn orange darken-4"><i
+      class="material-icons left">group</i>Corporativo</a>
   <a (click)="filterArea('Outros')" class="waves-effect waves-light btn orange darken-4"><i
       class="material-icons left">dehaze</i>Outros</a>
 </div>
@@ -106,26 +108,51 @@
         <div class="grey lighten-4 collapsible-body">
           <div class="card">
             <div class="card-content gray-text">
-              <span align="center" class="card-title">Categorização do Projeto</span>
-              <div class="divider"></div>
               <img *ngIf="item.imgUrl" style="max-height:200px" src="{{item.imgUrl}}" alt=""
                 class="center circle responsive-img">
-              <!-- notice the "circle" class -->
+              <p><b class="light-blue-text text-accent-4">Descrição:</b> {{item.descricao}}</p>
+              <p><b class="light-blue-text text-accent-4">URL do Projeto: </b><a target="_blank"
+                  href="{{item.url}}">Acesse</a></p>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-content gray-text">
+              <span align="center" class="card-title">Categorização do Projeto</span>
+              <div class="divider"></div>
               <p><b class="light-blue-text text-accent-4">Área:</b> {{item.area}}</p>
               <p><b class="light-blue-text text-accent-4">Status:</b> {{item.status}}</p>
-              <p><b class="light-blue-text text-accent-4">Coordenador:</b> {{item.equipe.coordenador}}</p>
-              <p><b class="light-blue-text text-accent-4">Equipe:</b> {{item.equipe.membros}}</p>
+              <p><b class="light-blue-text text-accent-4">Coordenador:</b> {{item.equipe.coordenador.nome}}</p>
+              <p><b class="light-blue-text text-accent-4">Contato Coordenador:</b> {{item.equipe.coordenador.telefone}}
+                - {{item.equipe.coordenador.email}}</p>
+              <div></div>
+              <ul class="collection">
+                <li class="collection-header light-blue-text text-accent-4">
+                  <p><b>Equipe:</b></p>
+                </li>
+                <li class="collection-item" *ngFor="let membro of item.equipe.membros">{{membro}}</li>
+              </ul>
               <p><b class="light-blue-text text-accent-4">Finalidade:</b> {{item.finalidade}}</p>
               <p><b class="light-blue-text text-accent-4">Financiamento:</b> {{item.financiamento}}</p>
             </div>
           </div>
           <div class="card">
             <div class="card-content gray-text">
-              <span align="center" class="card-title">Aplicabilidade do Projeto</span>
+              <span align="center" class="card-title">Contexto de Aplicação</span>
               <div class="divider"></div>
-              <p><b class="light-blue-text text-accent-4">Contexto:</b> {{item.aplicabilidade.contexto}}</p>
-              <p><b class="light-blue-text text-accent-4">Quesitos Básicos:</b> {{item.aplicabilidade.quesitos}}</p>
-              <p><b class="light-blue-text text-accent-4">Modalidade:</b> {{item.aplicabilidade.modalidade}}</p>
+              <ul class="collection">
+                <li class="collection-header light-blue-text text-accent-4">
+                  <p><b>Contexto Corporativo:</b></p>
+                </li>
+                <li class="collection-item" *ngFor="let contexto of item.aplicabilidade.contexto">{{contexto}}</li>
+              </ul>
+              <p><b class="light-blue-text text-accent-4">Métodos e Ferramentas:</b> {{item.aplicabilidade.quesitos}}
+              </p>
+              <ul class="collection">
+                <li class="collection-header light-blue-text text-accent-4">
+                  <p><b>Contratação:</b></p>
+                </li>
+                <li class="collection-item" *ngFor="let contrato of item.aplicabilidade.modalidade">{{contrato}}</li>
+              </ul>
             </div>
           </div>
         </div>

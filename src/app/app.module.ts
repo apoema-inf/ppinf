@@ -19,6 +19,7 @@ import { ProjetosComponent } from './projetos/projetos.component';
 import { FooterComponent } from './footer/footer.component';
 import {NgPipesModule} from 'ngx-pipes';
 import { AngularFireStorageModule } from 'angularfire2/storage';
+import {LocationStrategy, HashLocationStrategy} from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -43,7 +44,7 @@ import { AngularFireStorageModule } from 'angularfire2/storage';
     NgPipesModule,
     AngularFireStorageModule
   ],
-  providers: [AuthService, AuthGuard],
+  providers: [AuthService, AuthGuard, {provide: LocationStrategy, useClass: HashLocationStrategy}],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -28,7 +28,7 @@ export class AdminComponent implements OnInit {
     finalidade: '',
     financiamento: '',
     area: '',
-    equipe: { coordenador: '', membros: '' },
+    equipe: { coordenador: { nome: '', telefone: '', email: '' }, membros: '' },
     aplicabilidade: { contexto: '' }
   };
   projetos: Observable<Projeto[]>;
@@ -37,6 +37,7 @@ export class AdminComponent implements OnInit {
   tituloAntigo: any;
 
   constructor(private db: AngularFirestore, private storage: AngularFireStorage) {
+    this.projeto.coordenador = { nome: '', email: '', telefone: '' };
     this.projetos = db.collection('projetos').snapshotChanges().pipe(map(
 
       changes => {
@@ -94,22 +95,11 @@ export class AdminComponent implements OnInit {
 
   //Criar projeto sem img
   createProjeto() {
-    if (this.projeto.titulo == (null || '' || undefined) ||
-      this.projeto.area == (null || '' || undefined) ||
-      this.projeto.contexto == (null || '' || undefined) ||
-      this.projeto.status == (null || '' || undefined) ||
-      this.projeto.coordenador == (null || '' || undefined) ||
-      this.projeto.finalidade == (null || '' || undefined) ||
-      this.projeto.quesitos == (null || '' || undefined) ||
-      this.projeto.modalidade == (null || '' || undefined) ||
-      this.projeto.membros == (null || '' || undefined)) {
-      M.toast({ html: 'Preencha todos os campos obrigatório.', classes: 'rounded' });
-      return;
-    }
-
-    if (this.projeto.financiamento == (null || '' || undefined)) {
-      this.projeto.financiamento = "Sem Financiamento";
-    }
+    if (this.projeto.financiamento == (undefined || null || ''))
+      this.projeto.financiamento = 'Auto-Financiado'
+    var splitMembros = this.projeto.membros.split(',');
+    var splitContratacao = this.projeto.modalidade.split(',');
+    var splitContexto = this.projeto.contexto.split(',');
 
     // Show full page LoadingOverlay
     $.LoadingOverlay("show");
@@ -121,8 +111,8 @@ export class AdminComponent implements OnInit {
         finalidade: this.projeto.finalidade,
         financiamento: this.projeto.financiamento,
         area: this.projeto.area,
-        equipe: { coordenador: this.projeto.coordenador, membros: this.projeto.membros },
-        aplicabilidade: { contexto: this.projeto.contexto, quesitos: this.projeto.quesitos, modalidade: this.projeto.modalidade },
+        equipe: { coordenador: this.projeto.coordenador, membros: splitMembros },
+        aplicabilidade: { contexto: splitContexto, quesitos: this.projeto.quesitos, modalidade: splitContratacao },
       })
         .then(function (docRef) {
           $('#create').modal('close');
@@ -142,14 +132,18 @@ export class AdminComponent implements OnInit {
 
   //Criar projeto com img
   createProjetoImg() {
+    var splitMembros = this.projeto.membros.split(',');
+    var splitContratacao = this.projeto.modalidade.split(',');
+    var splitContexto = this.projeto.contexto.split(',');
+
     this.db.collection("projetos").add({
       titulo: this.projeto.titulo,
       status: this.projeto.status,
       finalidade: this.projeto.finalidade,
       financiamento: this.projeto.financiamento,
       area: this.projeto.area,
-      equipe: { coordenador: this.projeto.coordenador, membros: this.projeto.membros },
-      aplicabilidade: { contexto: this.projeto.contexto, quesitos: this.projeto.quesitos, modalidade: this.projeto.modalidade },
+      equipe: { coordenador: this.projeto.coordenador, membros: splitMembros },
+      aplicabilidade: { contexto: splitContexto, quesitos: this.projeto.quesitos, modalidade: splitContratacao },
       imgUrl: this.projeto.img
     })
       .then(function (docRef) {
@@ -198,6 +192,10 @@ export class AdminComponent implements OnInit {
   }
 
   editarProjeto(string) {
+    var splitMembros = this.projeto.membros.split(',');
+    var splitContratacao = this.projeto.modalidade.split(',');
+    var splitContexto = this.projeto.contexto.split(',');
+
     $.LoadingOverlay("show");
     var url;
     var that = this;
@@ -212,10 +210,12 @@ export class AdminComponent implements OnInit {
         finalidade: this.findOneId.finalidade,
         financiamento: this.findOneId.financiamento,
         area: this.findOneId.area,
-        equipe: { coordenador: this.findOneId.equipe.coordenador, membros: this.findOneId.equipe.membros },
-        aplicabilidade: { contexto: this.findOneId.aplicabilidade.contexto,
-        quesitos: this.findOneId.aplicabilidade.quesitos,
-        modalidade: this.findOneId.aplicabilidade.modalidade },
+        equipe: { coordenador: this.projeto.coordenador, membros: splitMembros },
+        aplicabilidade: {
+          contexto: splitContexto,
+          quesitos: this.findOneId.aplicabilidade.quesitos,
+          modalidade: splitContratacao
+        },
         imgUrl: firebase.firestore.FieldValue.delete()
       })
         .then(function () {
@@ -236,10 +236,13 @@ export class AdminComponent implements OnInit {
             finalidade: this.findOneId.finalidade,
             financiamento: this.findOneId.financiamento,
             area: this.findOneId.area,
-            equipe: { coordenador: this.findOneId.equipe.coordenador, membros: this.findOneId.equipe.membros },
-            aplicabilidade: { contexto: this.findOneId.aplicabilidade.contexto,
+            equipe: { coordenador: this.projeto.coordenador, membros: splitMembros },
+            aplicabilidade: {
+              contexto: splitContexto,
               quesitos: this.findOneId.aplicabilidade.quesitos,
-              modalidade: this.findOneId.aplicabilidade.modalidade },          })
+              modalidade: splitContratacao
+            },
+          })
             .then(function () {
               $('#edit').modal('close');
               M.toast({ html: 'Projeto editado com sucesso!', classes: 'rounded' });
@@ -261,10 +264,12 @@ export class AdminComponent implements OnInit {
                 finalidade: that.findOneId.finalidade,
                 financiamento: that.findOneId.financiamento,
                 area: that.findOneId.area,
-                equipe: { coordenador: that.findOneId.equipe.coordenador, membros: that.findOneId.equipe.membros },
-                aplicabilidade: { contexto: this.findOneId.aplicabilidade.contexto,
+                equipe: { coordenador: this.projeto.coordenador, membros: splitMembros },
+                aplicabilidade: {
+                  contexto: splitContexto,
                   quesitos: this.findOneId.aplicabilidade.quesitos,
-                  modalidade: this.findOneId.aplicabilidade.modalidade },
+                  modalidade: splitContratacao
+                },
                 imgUrl: url
               })
                 .then(function () {
@@ -294,10 +299,12 @@ export class AdminComponent implements OnInit {
                 finalidade: that.findOneId.finalidade,
                 financiamento: that.findOneId.financiamento,
                 area: that.findOneId.area,
-                equipe: { coordenador: that.findOneId.equipe.coordenador, membros: that.findOneId.equipe.membros },
-                aplicabilidade: { contexto: this.findOneId.aplicabilidade.contexto,
+                equipe: { coordenador: this.projeto.coordenador, membros: splitMembros },
+                aplicabilidade: {
+                  contexto: splitContexto,
                   quesitos: this.findOneId.aplicabilidade.quesitos,
-                  modalidade: this.findOneId.aplicabilidade.modalidade },
+                  modalidade: splitContratacao
+                },
                 imgUrl: url
               })
                 .then(function () {
@@ -319,10 +326,12 @@ export class AdminComponent implements OnInit {
             finalidade: this.findOneId.finalidade,
             financiamento: this.findOneId.financiamento,
             area: this.findOneId.area,
-            equipe: { coordenador: this.findOneId.equipe.coordenador, membros: this.findOneId.equipe.membros },
-            aplicabilidade: { contexto: this.findOneId.aplicabilidade.contexto,
+            equipe: { coordenador: this.projeto.coordenador, membros: splitMembros },
+            aplicabilidade: {
+              contexto: splitContexto,
               quesitos: this.findOneId.aplicabilidade.quesitos,
-              modalidade: this.findOneId.aplicabilidade.modalidade },
+              modalidade: splitContratacao
+            },
             imgUrl: this.findOneId.imgUrl
           })
             .then(function () {

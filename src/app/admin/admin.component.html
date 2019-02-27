@@ -9,33 +9,60 @@
   <br>
   <ul class="collapsible popout">
     <li *ngFor="let item of projetos | async">
-      <a (click)="findOne(item.id, 'delete')" style="margin-bottom: 0px" class="buttons-projetos btn-floating btn-small waves-effect waves-light red right modal-trigger"
+      <a (click)="findOne(item.id, 'delete')" style="margin-bottom: 0px"
+        class="buttons-projetos btn-floating btn-small waves-effect waves-light red right modal-trigger"
         href="#delete"><i class="material-icons">delete_forever</i></a>
-      <a (click)="findOne(item.id, 'edit')" class="buttons-projetos btn-floating btn-small waves-effect waves-light blue right modal-trigger"
+      <a (click)="findOne(item.id, 'edit')"
+        class="buttons-projetos btn-floating btn-small waves-effect waves-light blue right modal-trigger"
         href="#edit"><i class="material-icons">edit</i></a>
       <div class="collapsible-header">{{item.titulo}}</div>
       <div class="grey lighten-4 collapsible-body">
         <div class="card">
           <div class="card-content gray-text">
+            <img *ngIf="item.imgUrl" style="max-height:200px" src="{{item.imgUrl}}" alt=""
+              class="center circle responsive-img">
+            <p><b class="light-blue-text text-accent-4">Descrição:</b> {{item.descricao}}</p>
+            <p><b class="light-blue-text text-accent-4">URL do Projeto: </b><a target="_blank"
+                href="{{item.url}}">Acesse</a></p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-content gray-text">
             <span align="center" class="card-title">Categorização do Projeto</span>
             <div class="divider"></div>
-            <img *ngIf="item.imgUrl" style="max-height:200px" src="{{item.imgUrl}}" alt="" class="center circle responsive-img">
-            <!-- notice the "circle" class -->
             <p><b class="light-blue-text text-accent-4">Área:</b> {{item.area}}</p>
             <p><b class="light-blue-text text-accent-4">Status:</b> {{item.status}}</p>
-            <p><b class="light-blue-text text-accent-4">Coordenador:</b> {{item.equipe.coordenador}}</p>
-            <p><b class="light-blue-text text-accent-4">Equipe:</b> {{item.equipe.membros}}</p>
+            <p><b class="light-blue-text text-accent-4">Coordenador:</b> {{item.equipe.coordenador.nome}}</p>
+            <p><b class="light-blue-text text-accent-4">Contato Coordenador:</b> {{item.equipe.coordenador.telefone}}
+              - {{item.equipe.coordenador.email}}</p>
+            <ul class="collection">
+              <li class="collection-header light-blue-text text-accent-4">
+                <p><b>Equipe:</b></p>
+              </li>
+              <li class="collection-item" *ngFor="let membro of item.equipe.membros">{{membro}}</li>
+            </ul>
             <p><b class="light-blue-text text-accent-4">Finalidade:</b> {{item.finalidade}}</p>
             <p><b class="light-blue-text text-accent-4">Financiamento:</b> {{item.financiamento}}</p>
           </div>
         </div>
         <div class="card">
           <div class="card-content gray-text">
-            <span align="center" class="card-title">Aplicabilidade do Projeto</span>
+            <span align="center" class="card-title">Contexto de Aplicação</span>
             <div class="divider"></div>
-            <p><b class="light-blue-text text-accent-4">Contexto:</b> {{item.aplicabilidade.contexto}}</p>
-            <p><b class="light-blue-text text-accent-4">Quesitos Básicos:</b> {{item.aplicabilidade.quesitos}}</p>
-            <p><b class="light-blue-text text-accent-4">Modalidade:</b> {{item.aplicabilidade.modalidade}}</p>
+            <ul class="collection">
+              <li class="collection-header light-blue-text text-accent-4">
+                <p><b>Contexto Corporativo:</b></p>
+              </li>
+              <li class="collection-item" *ngFor="let contexto of item.aplicabilidade.contexto">{{contexto}}</li>
+            </ul>
+            <p><b class="light-blue-text text-accent-4">Métodos e Ferramentas:</b> {{item.aplicabilidade.quesitos}}
+            </p>
+            <ul class="collection">
+              <li class="collection-header light-blue-text text-accent-4">
+                <p><b>Contratação:</b></p>
+              </li>
+              <li class="collection-item" *ngFor="let contrato of item.aplicabilidade.modalidade">{{contrato}}</li>
+            </ul>
           </div>
         </div>
       </div>
@@ -52,13 +79,18 @@
         <div class="input-field col s12">
           <input [(ngModel)]="projeto.titulo" id="titulo" type="text" class="validate" name="titulo" required=""
             aria-required="true">
-          <label for="titulo">Nome do Projeto *</label>
+          <label for="titulo">Nome do Projeto</label>
+        </div>
+        <div class="input-field col s12">
+          <textarea [(ngModel)]="projeto.descricao" id="descricao" class="materialize-textarea validate"
+            name="descricao" required="" aria-required="true"></textarea>
+          <label for="descricao">Descrição do Projeto</label>
         </div>
       </div>
       <div class="row">
         <div class="input-field col s6">
           <select id="status" [(ngModel)]="projeto.status" name="status">
-            <option value="" disabled selected>Status do Projeto *</option>
+            <option value="" disabled selected>Status do Projeto</option>
             <option value="Em andamento">Em andamento</option>
             <option value="Concluído">Concluído</option>
             <option value="Suspenso">Suspenso</option>
@@ -66,7 +98,7 @@
         </div>
         <div class="input-field col s6">
           <select [(ngModel)]="projeto.area" name="area">
-            <option value="" disabled selected>Área do Projeto *</option>
+            <option value="" disabled selected>Área do Projeto</option>
             <option value="Agronegócio">Agronegócio</option>
             <option value="Educação">Educação</option>
             <option value="Engenharia">Engenharia</option>
@@ -74,12 +106,13 @@
             <option value="Logística">Logística</option>
             <option value="Meio Ambiente">Meio Ambiente</option>
             <option value="Saúde">Saúde</option>
+            <option value="Corporativo">Corporativo</option>
             <option value="Outros">Outros</option>
           </select>
         </div>
         <div class="input-field col s6">
           <select [(ngModel)]="projeto.finalidade" name="finalidade">
-            <option value="" disabled selected>Finalidade do Projeto *</option>
+            <option value="" disabled selected>Finalidade do Projeto</option>
             <option value="Pesquisa">Pesquisa</option>
             <option value="Extensão">Extensão</option>
             <option value="Desenvolvimento Institucional">Desenvolvimento Institucional</option>
@@ -87,43 +120,51 @@
           </select>
         </div>
         <div class="input-field col s6">
-          <input [(ngModel)]="projeto.financiamento" id="financiamento" type="text" name="financiamento">
-          <label for="financiamento">Aporte do Projeto</label>
+          <select [(ngModel)]="projeto.financiamento" name="financiamento" multiple>
+            <option value="Auto-Financiado" disabled selected>Financiamento do Projeto</option>
+            <option value="Auto-Financiado">Auto-Financiado</option>
+            <option value="Financiado pela UFG">Financiado pela UFG</option>
+            <option value="Financiamento Externo">Financiamento Externo</option>
+          </select>
         </div>
       </div>
       <div class="row">
 
         <div class="input-field col s12">
-          <input [(ngModel)]="projeto.coordenador" id="coordenador" type="text" class="validate" name="coordenador">
-          <label for="coordenador">Coordenador do Projeto *</label>
+          <input [(ngModel)]="projeto.coordenador.nome" id="coordenador" type="text" class="validate" name="coordenador">
+          <label for="coordenador">Coordenador do Projeto</label>
+        </div>
+        <div class="input-field col s6">
+          <input [(ngModel)]="projeto.coordenador.telefone" id="telefone" type="text" class="validate" name="telefone">
+          <label for="telefone">Telefone do Coordenador</label>
+        </div>
+        <div class="input-field col s6">
+          <input [(ngModel)]="projeto.coordenador.email" id="email" type="text" class="validate" name="email">
+          <label for="email">Email do Coordenador</label>
         </div>
       </div>
       <div class="row">
         <div class="input-field col s12">
           <textarea [(ngModel)]="projeto.membros" id="membros" class="materialize-textarea validate" name="membros"
             required="" aria-required="true"></textarea>
-          <label for="membros">Membros do Projeto *</label>
+          <label for="membros">Membros do Projeto</label>
         </div>
       </div>
       <div class="row">
         <div class="input-field col s12">
           <textarea [(ngModel)]="projeto.contexto" id="contexto" class="materialize-textarea validate" name="contexto"
             required="" aria-required="true"></textarea>
-          <label for="contexto">Contexto do Projeto *</label>
+          <label for="contexto">Contexto Corporativo do Projeto</label>
         </div>
         <div class="input-field col s12">
           <textarea [(ngModel)]="projeto.quesitos" id="quesitos" class="materialize-textarea validate" name="quesitos"
             required="" aria-required="true"></textarea>
-          <label for="quesitos">Quesitos Básicos do Projeto *</label>
+          <label for="quesitos">Métodos e Ferramentas do Projeto</label>
         </div>
-        <div class="input-field col s6">
-          <select [(ngModel)]="projeto.modalidade" name="modalidade" multiple>
-            <option value="" disabled selected>Modalidade do Projeto *</option>
-            <option value="Convênio">Convênio</option>
-            <option value="Contrato">Contrato</option>
-            <option value="Cooperação Técnica">Cooperação Técnica</option>
-            <option value="TED">TED</option>
-          </select>
+        <div class="input-field col s12">
+          <textarea [(ngModel)]="projeto.modalidade" id="modalidade" class="materialize-textarea validate"
+            name="modalidade" required="" aria-required="true"></textarea>
+          <label for="modalidade">Contratação do Projeto</label>
         </div>
       </div>
       <div class="row">
@@ -157,7 +198,7 @@
         <div class="input-field col s12">
           <input [(ngModel)]="findOneId.titulo" id="titulo" type="text" class="validate" name="titulo" required=""
             aria-required="true">
-          <label for="titulo" class="active">Título do projeto *</label>
+          <label for="titulo" class="active">Título do projeto</label>
         </div>
       </div>
       <div class="row">
@@ -167,7 +208,7 @@
             <option value="Concluído">Concluído</option>
             <option value="Suspenso">Suspenso</option>
           </select>
-          <label>Status do Projeto *</label>
+          <label>Status do Projeto</label>
         </div>
         <div class="input-field col s6">
           <select [(ngModel)]="findOneId.area" name="area">
@@ -180,7 +221,7 @@
             <option value="Saúde">Saúde</option>
             <option value="Outros">Outros</option>
           </select>
-          <label>Área do Projeto *</label>
+          <label>Área do Projeto</label>
         </div>
         <div class="input-field col s6">
           <select [(ngModel)]="findOneId.finalidade" name="finalidade">
@@ -189,7 +230,7 @@
             <option value="Desenvolvimento Institucional">Desenvolvimento Institucional</option>
             <option value="Desenvolvimento Organizacional">Desenvolvimento Organizacional</option>
           </select>
-          <label>Finalidade do Projeto *</label>
+          <label>Finalidade do Projeto</label>
         </div>
         <div class="input-field col s6">
           <input [(ngModel)]="findOneId.financiamento" id="financiamento" type="text" name="financiamento">
@@ -198,36 +239,33 @@
       </div>
       <div class="row">
         <div class="input-field col s12">
-          <input [(ngModel)]="findOneId.equipe.coordenador" id="coordenador" type="text" class="validate" name="coordenador">
-          <label for="coordenador" class="active">Coordenador do Projeto *</label>
+          <input [(ngModel)]="findOneId.equipe.coordenador.nome" id="coordenador" type="text" class="validate"
+            name="coordenador">
+          <label for="coordenador" class="active">Coordenador do Projeto</label>
         </div>
       </div>
       <div class="row">
         <div class="input-field col s12">
-          <textarea [(ngModel)]="findOneId.equipe.membros" id="membros" class="materialize-textarea validate" name="membros"
-            required="" aria-required="true"></textarea>
-          <label for="membros" class="active">Membros do Projeto *</label>
+          <textarea [(ngModel)]="findOneId.equipe.membros" id="membros" class="materialize-textarea validate"
+            name="membros" required="" aria-required="true"></textarea>
+          <label for="membros" class="active">Membros do Projeto</label>
         </div>
       </div>
       <div class="row">
         <div class="input-field col s12">
           <textarea [(ngModel)]="findOneId.aplicabilidade.contexto" id="contexto" class="materialize-textarea validate"
             name="contexto" required="" aria-required="true"></textarea>
-          <label for="contexto" class="active">Contexto do Projeto *</label>
+          <label for="contexto" class="active">Contexto do Projeto</label>
         </div>
         <div class="input-field col s12">
           <textarea [(ngModel)]="findOneId.aplicabilidade.quesitos" id="quesitos" class="materialize-textarea validate"
             name="quesitos" required="" aria-required="true"></textarea>
-          <label for="quesitos" class="active">Quesitos Básicos do Projeto *</label>
+          <label for="quesitos" class="active">Quesitos Básicos do Projeto</label>
         </div>
-        <div class="input-field col s6">
-          <select [(ngModel)]="findOneId.aplicabilidade.modalidade" name="modalidade" multiple>
-            <option value="Convênio">Convênio</option>
-            <option value="Contrato">Contrato</option>
-            <option value="Cooperação Técnica">Cooperação Técnica</option>
-            <option value="TED">TED</option>
-          </select>
-          <label>Modalidade do Projeto *</label>
+        <div class="input-field col s12">
+          <textarea [(ngModel)]="findOneId.aplicabilidade.modalidade" id="modalidade"
+            class="materialize-textarea validate" name="modalidade" required="" aria-required="true"></textarea>
+          <label class="active" for="modalidade">Contratação do Projeto</label>
         </div>
       </div>
       <div *ngIf="findOneId.imgUrl" class="row">
@@ -284,6 +322,7 @@
   <div class="modal-footer" align="center">
     Deseja realmente excluir este projeto?
     <a style="margin-left:40px; margin-right:40px" class="waves-effect waves-light btn red modal-close">Cancelar</a>
-    <a style="margin-right:20px" (click)="deletarProjeto(findOneId.id, findOneId.titulo)" class="waves-effect waves-light btn green">Deletar</a>
+    <a style="margin-right:20px" (click)="deletarProjeto(findOneId.id, findOneId.titulo)"
+      class="waves-effect waves-light btn green">Deletar</a>
   </div>
 </div>
