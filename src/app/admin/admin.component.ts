@@ -18,7 +18,7 @@ declare var M: any;
 export class AdminComponent implements OnInit {
 
   //Checar se o projeto fica sem qualquer imagem ao editar
-  check = false;
+  check: boolean = false;
   selectedFiles: FileList;
   file: File;
   findOneId: Projeto = new Projeto();
@@ -203,6 +203,7 @@ export class AdminComponent implements OnInit {
   }
 
   findOne(string, janela) {
+    this.check = false;
     $("#" + janela).LoadingOverlay("show");
     var docRef = this.db.collection("projetos").doc(string);
 
