@@ -15,7 +15,6 @@ import { AuthService } from './services/auth.service';
 import { AuthGuard } from './services/auth-guard.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NavbarComponent } from './navbar/navbar.component';
-import { ProjetosComponent } from './projetos/projetos.component';
 import { FooterComponent } from './footer/footer.component';
 import {NgPipesModule} from 'ngx-pipes';
 import { AngularFireStorageModule } from 'angularfire2/storage';
@@ -30,7 +29,6 @@ import {LocationStrategy, HashLocationStrategy} from '@angular/common';
     ContatoComponent,
     AdminComponent,
     NavbarComponent,
-    ProjetosComponent,
     FooterComponent
   ],
   imports: [

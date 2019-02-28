@@ -11,8 +11,8 @@ declare var $: any;
 })
 export class LoginComponent {
 
-  public email: string;
-  private password: string;
+  email: string;
+  password: string;
 
   constructor(
     private authService: AuthService,
